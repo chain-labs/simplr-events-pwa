@@ -106,7 +106,7 @@ export default function Home() {
                 <input
                   type="email"
                   placeholder="Enter your email for early access..."
-                  className="md:p-3 p-4 flex-1 rounded-2xl text-gray-700 md:pr-20 w-full"
+                  className="md:p-3 p-4 flex-1 rounded-2xl text-gray-700 md:pr-4 w-full"
                 />
                 <button className="h-full bg-gradient-to-r from-[#EEFFBC] to-[#FFFC45] p-[6px] text-text-blue text-lg font-bold rounded-full flex items-center shadow-inner-custom w-full md:w-auto">
                   <div className="justify-center py-[10px] px-[18px] bg-gradient-to-r from-[#DEFF3B] to-[#EEFFBC] rounded-full flex items-center gap-x-2 w-full md:w-auto">
