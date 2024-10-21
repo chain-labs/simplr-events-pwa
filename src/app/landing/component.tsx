@@ -48,12 +48,10 @@ export default function Home() {
         <motion.div
           style={{
             backgroundImage: "url('/images/event-gradient.png')",
-            width: "800px",
-            height: "800px",
             borderRadius: "50%",
             aspectRatio: "1 / 1",
           }}
-          className="text-center md:p-10 shadow-lg p-20 flex items-center justify-center flex-col bg-cover bg-center bg-no-repeat relative"
+          className="text-center md:p-10 shadow-lg p-20 flex items-center justify-center flex-col bg-cover bg-center bg-no-repeat relative w-[800px] h-[800px] md:w-[110vh] md:h-[110vh]"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -101,17 +99,17 @@ export default function Home() {
             </motion.p>
 
             <motion.div
-              className="md:bg-white rounded-full w-full"
+              className="md:bg-white rounded-full w-full md:w-[540px]"
               variants={itemVariants}
             >
-              <div className="flex md:flex-row flex-col items-center justify-between md:w-[540px] md:py-1 md:pl-6 md:pr-1 md:gap-x-2 gap-y-2">
+              <div className="flex md:flex-row flex-col md:items-center md:justify-between md:w-[540px] md:py-1 md:pl-6 md:pr-1 md:gap-x-2 gap-y-2">
                 <input
                   type="email"
                   placeholder="Enter your email for early access..."
                   className="md:p-3 p-4 flex-1 rounded-2xl text-gray-700 md:pr-20 w-full"
                 />
-                <button className="h-full bg-gradient-to-r from-[#EEFFBC] to-[#FFFC45] p-[6px] text-text-blue text-lg font-bold rounded-full flex items-center shadow-inner-custom w-full">
-                  <div className="justify-center py-[10px] px-[18px] bg-gradient-to-r from-[#DEFF3B] to-[#EEFFBC] rounded-full flex items-center gap-x-2 w-full">
+                <button className="h-full bg-gradient-to-r from-[#EEFFBC] to-[#FFFC45] p-[6px] text-text-blue text-lg font-bold rounded-full flex items-center shadow-inner-custom w-full md:w-auto">
+                  <div className="justify-center py-[10px] px-[18px] bg-gradient-to-r from-[#DEFF3B] to-[#EEFFBC] rounded-full flex items-center gap-x-2 w-full md:w-auto">
                     <Icon icon="mdi:ticket" width={32} height={32} />
                     Join Waitlist
                   </div>
