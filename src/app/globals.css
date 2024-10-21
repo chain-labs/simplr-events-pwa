@@ -2,16 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* styles/globals.css */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Forum&display=swap");
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
@@ -20,8 +16,19 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.bg-animated-gradient {
+  background: linear-gradient(135deg, #2b1055, #7597de, #ff1361, #fff800);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+.bg-gradient-animated {
+  background: linear-gradient(
+    -45deg,
+    theme("colors.primary1"),
+    theme("colors.primary2"),
+    theme("colors.primary3")
+  );
+  background-size: 600% 600%;
+  animation: gradient-bg;
 }
