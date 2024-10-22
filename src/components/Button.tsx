@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes } from "react";
-import { dmSans, forum } from "../app/fonts";
+import { dmSans } from "../app/fonts";
 
 export default function Button({
 	children,
