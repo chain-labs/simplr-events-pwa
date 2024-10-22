@@ -1,24 +1,20 @@
 import { Metadata } from "next";
-import LandingAComponent from "./landing/component";
-import { DM_Sans } from "next/font/google";
+import Hero from "./landing/Hero";
+import Quote from "./landing/Quote";
+import WordsBoard from "./landing/WordsBoard";
+import Newsletter from "./landing/Newsletter";
 
 export const metadata: Metadata = {
-  title: "Simplr Events - Coldplay",
+	title: "Simplr Events - Coldplay",
 };
 
-const dmSans = DM_Sans({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
-
 export default function Home() {
-  return (
-    <body
-      className={`${dmSans.className} bg-cover`}
-      style={{ backgroundImage: "url('/images/body-gradient.png')" }}
-    >
-      <LandingAComponent />
-    </body>
-  );
+	return (
+		<>
+			<Hero />
+			<Quote />
+			<WordsBoard />
+			<Newsletter />
+		</>
+	);
 }

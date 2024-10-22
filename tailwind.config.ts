@@ -7,6 +7,10 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontFamily: {
+      forum: "var(--forum)",
+      sans: "var(--dm-sans)",
+    },
     extend: {
       colors: {
         background: "var(--background)",
