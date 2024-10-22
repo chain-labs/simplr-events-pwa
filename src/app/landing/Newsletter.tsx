@@ -21,20 +21,20 @@ export default function Newsletter() {
 			<div className="flex flex-col md:flex-row max-w-[1200px] w-full">
 				<div className="flex flex-col gap-[48px] md:w-[70%]">
 					<motion.p
-						className={`text-white font-normal mb-2 font-forum tracking-[-2%] leading-[100%] ${forum.className}`}
+						className={`text-white font-normal mb-2 tracking-[-2%] leading-[100%] ${forum.className}`}
 						variants={itemVariants}
 					>
 						Your whole experience of attending an event is supposed
 						to be fun.
 					</motion.p>
 					<motion.p
-						className={`text-[#FFFEA8] font-normal mb-2 font-forum tracking-[-2%] leading-[100%] ${forum.className}`}
+						className={`text-[#FFFEA8] font-normal mb-2 tracking-[-2%] leading-[100%] ${forum.className}`}
 						variants={itemVariants}
 					>
 						It is supposed to be Simplr.
 					</motion.p>
 					<motion.p
-						className={`text-white font-normal mb-2 font-forum tracking-[-2%] leading-[100%] ${forum.className}`}
+						className={`text-white font-normal mb-2 tracking-[-2%] leading-[100%] ${forum.className}`}
 						variants={itemVariants}
 					>
 						We have{" "}
@@ -84,7 +84,7 @@ export default function Newsletter() {
 						</div>
 					</motion.div>
 					<motion.div
-						className={`text-white text-[16px] mb-8 font-sans ${dmSans.className}`}
+						className={`text-white text-[16px] mb-8 ${dmSans.className}`}
 						variants={itemVariants}
 					>
 						Oh, btw there are perks and benefits for getting in
@@ -95,7 +95,7 @@ export default function Newsletter() {
 					</motion.div>
 
 					<motion.div
-						className={`flex justify-center items-center gap-[10px] w-fit text-white text-[16px] mb-8 font-sans ${dmSans.className} italic`}
+						className={`flex justify-center items-center gap-[10px] w-fit text-white text-[16px] mb-8 ${dmSans.className} italic`}
 						variants={itemVariants}
 					>
 						<img

@@ -54,7 +54,7 @@ export default function Hero() {
 					</motion.div>
 					<div className="flex flex-col md:text-start text-center gap-[8px]">
 						<motion.h1
-							className={`md:text-[64px] text-[60px] text-white mb-2 font-forum tracking-[-3%] leading-[100%] ${forum.className}`}
+							className={`md:text-[64px] text-[60px] text-white mb-2 tracking-[-3%] leading-[100%] ${forum.className}`}
 							variants={itemVariants}
 						>
 							Tickets are now{" "}
@@ -76,7 +76,7 @@ export default function Hero() {
 						</motion.h1>
 
 						<motion.p
-							className={`text-[#FFFEA8] md:text-[32px] text-[24px] font-normal mb-2 font-forum tracking-[-2%] leading-[100%] ${forum.className}`}
+							className={`text-[#FFFEA8] md:text-[32px] text-[24px] font-normal mb-2 tracking-[-2%] leading-[100%] ${forum.className}`}
 							variants={itemVariants}
 						>
 							Be it a concert or conference, there&apos;s always{" "}
@@ -86,7 +86,7 @@ export default function Hero() {
 						</motion.p>
 
 						<motion.p
-							className={`text-white text-[16px] mb-8 font-sans ${dmSans.className}`}
+							className={`text-white text-[16px] mb-8 ${dmSans.className}`}
 							variants={itemVariants}
 						>
 							Simplr, the secondary ticket marketplace <br /> for
