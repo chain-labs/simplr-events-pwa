@@ -8,7 +8,7 @@ export default function Quote() {
 				backgroundSize: "cover",
                 filter: "saturate(0%) brightness(120%)",
 			}}
-			className={`py-10 w-full bg-no-repeat bg-cover bg-center text-white font-bold text-[48px] ${forum.className} text-center`}
+			className={`py-10 px-[16px] w-full bg-no-repeat bg-cover bg-center text-white text-[48px] ${forum.className} text-center`}
 		>
 			The secondary ticket marketplace is {" "} <u>broken</u>.
 		</div>

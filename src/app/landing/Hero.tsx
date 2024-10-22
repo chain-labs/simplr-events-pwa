@@ -24,7 +24,7 @@ export default function Hero() {
 	return (
 		<div
 			style={{ backgroundImage: "url('/images/body-gradient.png')" }}
-			className="flex py-10 w-full bg-no-repeat bg-cover bg-center"
+			className="flex justify-center items-center py-10 w-full bg-no-repeat bg-cover bg-center"
 		>
 			<motion.div
 				style={
@@ -34,14 +34,14 @@ export default function Hero() {
 						// aspectRatio: "1 / 1",
 					}
 				}
-				className="md:p-10 flex flex-col bg-cover bg-center bg-no-repeat relative w-full"
+				className="md:p-10 flex flex-col bg-cover bg-center bg-no-repeat relative w-full max-w-[1200px]"
 				variants={containerVariants}
 				initial="hidden"
 				animate="visible"
 			>
-				<div className="flex flex-col  gap-[32px] w-full">
+				<div className="flex flex-col  gap-[32px] w-full px-[16px]">
 					<motion.div
-						className="flex items-center space-x-2 mb-4"
+						className="flex justify-center md:justify-start items-center space-x-2 mb-4"
 						variants={itemVariants}
 					>
 						<img src="/images/logo.png" alt="Simplr Events Logo" />
@@ -52,7 +52,7 @@ export default function Hero() {
 							COLDPLAY
 						</span>
 					</motion.div>
-					<div className="flex flex-col gap-[8px]">
+					<div className="flex flex-col md:text-start text-center gap-[8px]">
 						<motion.h1
 							className={`md:text-[64px] text-[60px] text-white mb-2 font-forum tracking-[-3%] leading-[100%] ${forum.className}`}
 							variants={itemVariants}
@@ -102,7 +102,7 @@ export default function Hero() {
 							<input
 								type="email"
 								placeholder="Enter your email for early access..."
-								className="flex-1 rounded-[16px] text-gray-700 md:pr-4 w-full outline-none"
+								className="flex-1 rounded-[16px] text-gray-700 p-4 md:pr-4 w-full outline-none"
 							/>
 							<Button>
 								<Icon
@@ -116,7 +116,7 @@ export default function Hero() {
 					</motion.div>
 					<motion.div
 						variants={itemVariants}
-						className="ml-auto  h-[300px] w-[500px]"
+						className="ml-auto h-[300px] w-full max-w-[500px]"
 					>
 						<img
 							src="/images/coldplay-event-card.png"
