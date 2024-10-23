@@ -71,7 +71,7 @@ export default function Home() {
 							variants={itemVariants}
 						>
 							<img
-								src="/images/logo.png"
+								src="/images/logo.svg"
 								alt="Simplr Events Logo"
 							/>
 							<span className="text-red-500 text-[32px] font-bold">
