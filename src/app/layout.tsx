@@ -2,6 +2,7 @@ import "./globals.css";
 import { ReactNode } from "react";
 import Script from "next/script";
 import Analytics from "../components/Analytics";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Simplr Events - Coldplay",
@@ -24,10 +25,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           `}
         </Script>
       </head>
-      <Analytics />
-      {children}
+      <Suspense>
+        <Analytics />
+      </Suspense>
+      {children}``
     </html>
   );
 }
-
 // TODO: Make sure PWA service worker is compatible with Google Analytics
