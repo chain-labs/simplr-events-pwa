@@ -23,7 +23,7 @@ export default function Hero() {
 	};
 	return (
 		<div
-			style={{ backgroundImage: "url('/images/body-gradient.svg')" }}
+			style={{ backgroundImage: "url('/images/body-gradient.png')" }}
 			className="flex justify-center items-center py-10 w-full bg-no-repeat bg-cover bg-center"
 		>
 			<motion.div
@@ -44,7 +44,7 @@ export default function Hero() {
 						className="flex justify-center md:justify-start items-center space-x-2 mb-4"
 						variants={itemVariants}
 					>
-						<img src="/images/logo.png" alt="Simplr Events Logo" />
+						<img src="/images/logo.svg" alt="Simplr Events Logo" />
 						<span className="text-red-500 text-[32px]">❤️</span>
 						<span
 							className={`text-white text-[32px] ${forum.className}`}
