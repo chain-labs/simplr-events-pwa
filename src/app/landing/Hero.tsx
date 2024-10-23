@@ -23,7 +23,7 @@ export default function Hero() {
 	};
 	return (
 		<div
-			style={{ backgroundImage: "url('/images/body-gradient.png')" }}
+			style={{ backgroundImage: "url('/images/body-gradient.svg')" }}
 			className="flex justify-center items-center py-10 w-full bg-no-repeat bg-cover bg-center"
 		>
 			<motion.div
