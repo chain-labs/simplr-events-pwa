@@ -4,6 +4,7 @@
 import { motion } from "framer-motion";
 import { DM_Sans, Forum } from "next/font/google";
 import { Icon } from "@iconify-icon/react";
+import Script from "next/script";
 
 const forum = Forum({
 	weight: ["400"],
@@ -17,22 +18,29 @@ const dmSans = DM_Sans({
 	display: "swap",
 });
 
+
 export default function Home() {
 	const containerVariants = {
 		hidden: { opacity: 0 },
 		visible: {
-			opacity: 1,
+      opacity: 1,
 			transition: {
 				staggerChildren: 0.2,
 				delayChildren: 0.2,
 			},
 		},
 	};
-
+  
 	const itemVariants = {
-		hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 20 },
 		visible: { opacity: 1, y: 0 },
 	};
+  
+  function openForum(){
+    const formId = 'war572';
+	//@ts-expect-error: Tally is not defined in the current scope
+    Tally.openPopup(formId);
+  }
 
 	return (
 		<>
@@ -42,6 +50,7 @@ export default function Home() {
 					href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
 					rel="stylesheet"
 				/>
+		    <Script src="https://tally.so/widgets/embed.js" strategy="afterInteractive" />
 			</head>
 
 			<div className="flex items-center justify-center md:h-screen md:overflow-hidden overflow-x-hidden my-10 md:my-0">
@@ -106,26 +115,25 @@ export default function Home() {
 							</motion.p>
 						</div>
 						<motion.div
-							className="md:bg-white rounded-[16px] w-full md:w-[540px]"
 							variants={itemVariants}
 						>
-							<div className="flex md:flex-row flex-col md:items-center md:justify-between w-full max-w-[540px] md:py-1 md:pl-6 md:pr-1 gap-x-2 gap-y-2">
+							{/* <div className="flex md:flex-row flex-col md:items-center md:justify-between w-full max-w-[540px] md:py-1 md:pl-6 md:pr-1 gap-x-2 gap-y-2">
 								<input
 									type="email"
 									placeholder="Enter your email for early access..."
 									className="p-4 md:py-4 flex-1 rounded-[16px] text-gray-700 md:pr-4 w-full outline-none"
 								/>
-								<button className="h-full bg-gradient-to-r from-[#EEFFBC] to-[#FFFC45] p-[6px] text-text-blue text-lg font-bold rounded-full flex items-center shadow-inner-custom w-full md:w-auto">
+							</div> */}
+								<button onClick={openForum} className="h-full bg-gradient-to-r from-[#EEFFBC] to-[#FFFC45] p-[6px] text-text-blue text-lg font-bold rounded-full flex items-center shadow-inner-custom w-full md:w-auto">
 									<div className="justify-center py-[10px] px-[18px] bg-gradient-to-r from-[#DEFF3B] to-[#EEFFBC] rounded-full flex items-center gap-x-2 w-full md:w-auto">
 										<Icon
 											icon="mdi:ticket"
 											width={32}
 											height={32}
 										/>
-										Join Waitlist
+										Get Early Access
 									</div>
 								</button>
-							</div>
 						</motion.div>
 					</div>
 				</motion.div>
