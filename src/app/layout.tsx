@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <Suspense>
         <Analytics />
       </Suspense>
-      {children}``
+      {children}
     </html>
   );
 }
