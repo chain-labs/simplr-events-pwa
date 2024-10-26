@@ -4,7 +4,6 @@
 import { motion } from "framer-motion";
 import { DM_Sans, Forum } from "next/font/google";
 import { Icon } from "@iconify-icon/react";
-import Script from "next/script";
 
 const forum = Forum({
   weight: ["400"],
@@ -45,18 +44,6 @@ export default function Home() {
 
   return (
     <>
-      {/* Font Awesome CDN */}
-      <head>
-        <link
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-          rel="stylesheet"
-        />
-        <Script
-          src="https://tally.so/widgets/embed.js"
-          strategy="afterInteractive"
-        />
-      </head>
-
       <div className="flex items-center justify-center md:h-screen md:overflow-hidden overflow-x-hidden my-10 md:my-0">
         <motion.div
           style={{

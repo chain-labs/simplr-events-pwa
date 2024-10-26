@@ -24,6 +24,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID}')
           `}
         </Script>
+        {/* Font Awesome CDN */}
+        <link
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+          rel="stylesheet"
+        />
+        <Script
+          src="https://tally.so/widgets/embed.js"
+          strategy="afterInteractive"
+        />
       </head>
       <Suspense>
         <Analytics />
