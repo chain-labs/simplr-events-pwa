@@ -5,6 +5,7 @@ import Analytics from '../components/Analytics';
 import { Suspense } from 'react';
 import SEO from '../utils/seo';
 import Web3AuthHookProvider from '../contexts/Web3Auth';
+import { NavbarWithLoginAndDrawer } from '@/components/navbar-with-login-and-drawer';
 // import { NavbarWithLogin } from '@/components/navbar-with-login';
 
 export const metadata = {
@@ -39,9 +40,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body>
         <Web3AuthHookProvider>
-          {/* <header>
-            <NavbarWithLogin />
-          </header> */}
+          <header>
+            <NavbarWithLoginAndDrawer />
+          </header>
           <Suspense>
             <Analytics />
           </Suspense>

@@ -5,14 +5,7 @@
 /* styles/globals.css */
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Forum&display=swap");
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -31,4 +24,10 @@ body {
   );
   background-size: 600% 600%;
   animation: gradient-bg;
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
 }
