@@ -1,11 +1,14 @@
-import "./globals.css";
-import { ReactNode } from "react";
-import Script from "next/script";
-import Analytics from "../components/Analytics";
-import { Suspense } from "react";
+import './globals.css';
+import { ReactNode } from 'react';
+import Script from 'next/script';
+import Analytics from '../components/Analytics';
+import { Suspense } from 'react';
+import SEO from '../utils/seo';
+import Web3AuthHookProvider from '../contexts/Web3Auth';
+// import { NavbarWithLogin } from '@/components/navbar-with-login';
 
 export const metadata = {
-  title: "Simplr Events - Coldplay",
+  title: SEO.title,
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -34,10 +37,17 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           strategy="afterInteractive"
         />
       </head>
-      <Suspense>
-        <Analytics />
-      </Suspense>
-      {children}
+      <body>
+        <Web3AuthHookProvider>
+          {/* <header>
+            <NavbarWithLogin />
+          </header> */}
+          <Suspense>
+            <Analytics />
+          </Suspense>
+          {children}
+        </Web3AuthHookProvider>
+      </body>
     </html>
   );
 }
