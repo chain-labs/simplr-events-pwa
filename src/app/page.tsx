@@ -1,6 +1,8 @@
+import React from "react";
 import { Metadata } from "next";
-import LandingAComponent from "./landing/component";
 import { DM_Sans } from "next/font/google";
+
+import LandingAComponent from "./landing/component";
 
 export const metadata: Metadata = {
   title: "Simplr Events - Coldplay",

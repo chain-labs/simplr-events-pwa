@@ -1,8 +1,9 @@
-import "./globals.css";
-import { ReactNode } from "react";
+import React, { ReactNode, Suspense } from "react";
 import Script from "next/script";
+
 import Analytics from "../components/Analytics";
-import { Suspense } from "react";
+
+import "./globals.css";
 
 export const metadata = {
   title: "Simplr Events - Coldplay",

@@ -1,6 +1,7 @@
 // app/page.tsx
 "use client";
 
+import React from "react";
 import { motion } from "framer-motion";
 import { DM_Sans, Forum } from "next/font/google";
 import { Icon } from "@iconify-icon/react";
@@ -37,7 +38,8 @@ export default function Home() {
 
   function openForum() {
     const formId = "war572";
-    //@ts-expect-error: Tally is not defined in the current scope
+    // @ts-expect-error: Tally is not defined in the current scope
+    // eslint-disable-next-line no-undef
     Tally.openPopup(formId, {
       layout: "modal",
     });
