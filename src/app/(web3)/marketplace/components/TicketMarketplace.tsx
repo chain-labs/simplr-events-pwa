@@ -28,8 +28,9 @@ export default function TicketMarketplace() {
   >({});
 
   const allTicketsList = useMemo(() => {
-    if (ownedTickets.length || listedTickets.length) {
-      const owned = ownedTickets.map((ticket) => ticket.tokenId.toString());
+    if (ownedTickets?.length || listedTickets?.length) {
+      const owned =
+        ownedTickets?.map((ticket) => ticket.tokenId.toString()) ?? [];
       const listed = listedTickets.map((ticket) => ticket.tokenId.toString());
       const ownedSet = new Set(owned);
       const mergedTickets = [
@@ -44,7 +45,7 @@ export default function TicketMarketplace() {
   }, [ownedTickets, listedTickets]);
 
   useMemo(() => {
-    if (ownedTickets.length && listedTickets.length) {
+    if (ownedTickets?.length && listedTickets?.length) {
       const refreshedOwned = ownedTickets.map((ticket) => {
         const listedTicket = listedTickets.find(
           (listedTicket) => listedTicket.tokenId === ticket.tokenId
@@ -116,7 +117,7 @@ export default function TicketMarketplace() {
           variables: { id: `user-${address}` },
         })
         .then((response) => {
-          const owned = response.data.data.user.ticketsOwned.items.map(
+          const owned = response.data.data.user?.ticketsOwned.items.map(
             (ticket: any) => {
               return {
                 listed: false,
@@ -180,7 +181,7 @@ export default function TicketMarketplace() {
     <div className="mt-8">
       <h2 className="text-2xl font-bold mb-4">Your Tickets</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {ownedTickets.map((ticket) => (
+        {(ownedTickets ?? []).map((ticket) => (
           <OwnedTicketCard
             key={ticket.tokenId.toString()}
             ticket={ticket}
