@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -18,16 +19,9 @@ import { ITicket } from "../types"; // You'll need to move the type to a separat
 
 type OwnedTicketCardProps = {
   ticket: ITicket;
-  allTicketsData: Record<
-    string,
-    { seat: string; ticketSerialNumberHash: bigint }
-  >;
 };
 
-export function OwnedTicketCard({
-  ticket,
-  allTicketsData,
-}: OwnedTicketCardProps) {
+export function OwnedTicketCard({ ticket }: OwnedTicketCardProps) {
   const [listingPrice, setListingPrice] = useState("");
   const [deadline, setDeadline] = useState<number | null>(null);
   const account = useAccount();
@@ -59,13 +53,14 @@ export function OwnedTicketCard({
         <CardTitle>
           {ticket.event.name}{" "}
           <span className="text-lg font-normal text-gray-700">
-            #{allTicketsData?.[ticket.tokenId.toString()]?.seat}
+            #{ticket.ticketSerialNumberHash}
           </span>
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <div className="space-y-2">
+            <CardDescription>Seat: {ticket.seat}</CardDescription>
             <label htmlFor="listingPrice">Listing Price (USD)</label>
             <Input
               id="listingPrice"

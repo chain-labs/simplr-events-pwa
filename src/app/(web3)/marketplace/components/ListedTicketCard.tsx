@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAccount } from "wagmi";
+import { formatUnits } from "viem";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,22 +10,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import usePaymentTokenContract from "@/abi/PaymentToken";
 
 import { ITicketListed } from "../types";
 
-const ListedTicketCard = ({
-  ticket,
-  allTicketsData,
-}: {
-  ticket: ITicketListed;
-  allTicketsData: Record<
-    string,
-    { seat: string; ticketSerialNumberHash: bigint }
-  >;
-}) => {
+const ListedTicketCard = ({ ticket }: { ticket: ITicketListed }) => {
   //   const { writeContractAsync: buyTicket } = useWriteContract();
   const account = useAccount();
   const [showModal, setShowModal] = useState(false);
+
+  const PTContract = usePaymentTokenContract(); // Payment Token Contract
 
   const handleBuy = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -62,12 +57,17 @@ const ListedTicketCard = ({
             <CardTitle>
               {ticket.event.name}{" "}
               <span className="text-lg font-normal text-gray-700">
-                #{allTicketsData?.[ticket.tokenId.toString()]?.seat}
+                #{ticket.ticketSerialNumberHash}
               </span>
             </CardTitle>
-            <CardDescription>Price: {ticket.price} ETH</CardDescription>
+            <CardDescription>Seat: {ticket.seat}</CardDescription>
             <CardDescription>
-              Listed Till: {new Date(ticket.deadline * 1000).toLocaleString()}
+              Price: {formatUnits(BigInt(ticket.price), PTContract.decimals)}{" "}
+              ETH
+            </CardDescription>
+            <CardDescription>
+              Listed Till:{" "}
+              {new Date(Number(ticket.deadline) * 1000).toLocaleString()}
             </CardDescription>
             {ticket.owner.toLowerCase() === account.address?.toLowerCase() && (
               <CardDescription className="text-red-500">

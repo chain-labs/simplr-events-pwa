@@ -2,11 +2,12 @@ export type ITicket = {
   event: { name: string; date: number };
   owner: string;
   seat: string;
-  tokenId: bigint;
+  ticketSerialNumberHash: string;
+  tokenId: string;
   listed: boolean;
 };
 
 export type ITicketListed = ITicket & {
-  price: bigint;
-  deadline: number;
+  price: string;
+  deadline: string;
 };
