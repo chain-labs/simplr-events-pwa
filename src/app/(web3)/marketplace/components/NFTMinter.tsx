@@ -20,13 +20,14 @@ export default function NFTMinter() {
   const handleMint = async () => {
     setIsMinting(true);
     try {
+      // upload metadata and get uri
       await mintWrite({
         address: EventContract?.address,
         abi: EventContract?.abi,
         functionName: "createTicket",
         args: [
           {
-            ticketSerialNumberHash,
+            ticketSerialNumberHash: BigInt(ticketSerialNumberHash),
             seat,
             verificationData: "", // bytes data
             ticketEncryptedDataUri: "", // lit protocol's encrypted data

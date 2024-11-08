@@ -2,17 +2,17 @@ import { ObjectId } from "mongodb";
 
 import clientPromise from "../../../lib/mongodb";
 
-const client = await clientPromise;
-const db = client.db("simplr-events");
-
+const dbName = "simplr-events";
 
 export async function POST(request) {
+    const client = await clientPromise;
+  const db = client.db(dbName);
 
-  const { sellerAddress, ticketId, signature } = await request.json();
+    const { sellerAddress, ticketId, signature } = await request.json();
 
   try {
-    const user = await db.collection("users").findOne({ address: sellerAddress });
-    const existingListing = await db.collection("listings").findOne({ ticketId });
+      const user = await db.collection("users").findOne({ address: sellerAddress });
+      const existingListing = await db.collection("listings").findOne({ ticketId });
     if (existingListing) {
       await db.collection("listings").deleteMany({ ticketId });
     }
@@ -20,8 +20,13 @@ export async function POST(request) {
       return new Response(JSON.stringify({ error: "User not found" }), { status: 404 });
     }
 
+    console.log({
+        userId: user._id,
+        ticketId,
+        signature,
+      })
     const result = await db.collection("listings").insertOne({
-      userId: ObjectId(user._id),
+      userId: user._id,
       ticketId,
       signature,
     });
@@ -34,6 +39,8 @@ export async function POST(request) {
 }
 
 export async function GET(request) {
+    const client = await clientPromise;
+  const db = client.db(dbName);
   const { searchParams } = new URL(request.url);
   const ticketId = searchParams.get("ticketId"); // Query parameter to fetch listings for a specific user
 

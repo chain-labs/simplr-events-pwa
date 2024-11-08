@@ -30,7 +30,6 @@
     "curly": ["error", "all"],
     "semi": ["error", "always"],
     "quotes": ["error", "double"],
-    "indent": ["error", 2],
     "linebreak-style": ["error", "unix"]
   },
   "settings": {

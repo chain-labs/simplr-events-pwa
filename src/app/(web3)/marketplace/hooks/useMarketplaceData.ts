@@ -11,6 +11,7 @@ const useMarketplaceData = () => {
   const account = useAccount();
   const [marketTickets, setMarketTickets] = useState<ITicketListed[]>([]);
   const [userTickets, setUserTickets] = useState<ITicket[]>([]);
+  
   useEffect(() => {
     if (account.address) {
       const getAllTickets = async () => {
@@ -18,8 +19,9 @@ const useMarketplaceData = () => {
           query: getMarketplaceTicketsListWithUser,
           variables: { id: `user-${account.address}` },
         });
-        const listings = responseWithUser.data.data.listings.items;
-        const userTickets = responseWithUser.data.data.user.ticketsOwned.items;
+        const listings = responseWithUser.data.data.listings?.items ?? [];
+        const userTickets =
+          responseWithUser.data.data.user?.ticketsOwned?.items ?? [];
         const mergedTickets = Array.from(
           new Set([
             ...listings.map((ticket: { ticketId: string }) => ticket.ticketId),

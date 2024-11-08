@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { useAccount } from "wagmi";
+import { useAccount, useConfig, useWriteContract } from "wagmi";
+import { waitForTransactionReceipt } from "@wagmi/core";
 import { formatUnits } from "viem";
 
 import { Button } from "@/components/ui/button";
@@ -13,23 +14,58 @@ import {
 import usePaymentTokenContract from "@/abi/PaymentToken";
 
 import { ITicketListed } from "../types";
+import axios from "axios";
+import useEventContract from "@/abi/Event";
+import useMarketplaceContract from "@/abi/Marketplace";
+import Link from "next/link";
 
 const ListedTicketCard = ({ ticket }: { ticket: ITicketListed }) => {
-  //   const { writeContractAsync: buyTicket } = useWriteContract();
+  const { writeContractAsync: buyTicket } = useWriteContract();
   const account = useAccount();
   const [showModal, setShowModal] = useState(false);
 
+  const EventContract = useEventContract();
+  const MarketplaceContract = useMarketplaceContract();
   const PTContract = usePaymentTokenContract(); // Payment Token Contract
 
-  const handleBuy = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const config = useConfig();
+
+  const handleBuy = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    // buyTicket?.({
-    //   address: ,
-    //   abi: CONTRACT_ABI,
-    //   functionName: "buyTicket",
-    //   args: [tokenId],
-    //   value: price,
-    // });
+    const userConfirmed = window.confirm(
+      "Are you sure you want to buy this ticket?"
+    );
+    if (!userConfirmed) {
+      return;
+    }
+    try {
+      const signatureResponse = await axios.get(
+        `/api/listings?ticketId=ticket-${EventContract.address}-${ticket.tokenId}`
+      );
+      const signature = signatureResponse.data.signature;
+      console.log({ signature });
+
+      const tx = await buyTicket?.({
+        address: MarketplaceContract.address,
+        abi: MarketplaceContract.abi,
+        functionName: "purchaseTicket",
+        args: [
+          {
+            eventContract: EventContract.address,
+            tokenId: BigInt(ticket.tokenId),
+            price: BigInt(ticket.price),
+            seller: ticket.owner,
+            deadline: BigInt(ticket.deadline),
+          },
+          signature,
+        ],
+      });
+
+      const reciept = await waitForTransactionReceipt(config, { hash: tx });
+      console.log({ reciept });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleCancelListing = () => {
@@ -63,7 +99,7 @@ const ListedTicketCard = ({ ticket }: { ticket: ITicketListed }) => {
             <CardDescription>Seat: {ticket.seat}</CardDescription>
             <CardDescription>
               Price: {formatUnits(BigInt(ticket.price), PTContract.decimals)}{" "}
-              ETH
+              USD
             </CardDescription>
             <CardDescription>
               Listed Till:{" "}
@@ -76,14 +112,11 @@ const ListedTicketCard = ({ ticket }: { ticket: ITicketListed }) => {
             )}
           </CardHeader>
           <CardFooter>
-            <Button
-              onClick={handleBuy}
-              disabled={
-                ticket.owner.toLowerCase() === account.address?.toLowerCase()
-              }
+            <Link
+              href={`/ticket/ticket-${EventContract.address}-${ticket.tokenId}`}
             >
-              Buy Ticket
-            </Button>
+              <Button>View Details</Button>
+            </Link>
             {ticket.owner.toLowerCase() === account.address?.toLowerCase() && (
               <>
                 <Button onClick={() => setShowModal(true)} className="ml-2">
