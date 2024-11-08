@@ -5,25 +5,6 @@ import Image from "next/image";
 
 import TicketActions from "./TicketActions";
 
-// Simulated function to fetch ticket data
-// async function getTicket(id: string) {
-//   // In a real application, you would fetch this data from your API or database
-//   const ticket = {
-//     id,
-//     seatNo: "A1",
-//     serialNumber: "T12345",
-//     price: 100,
-//     deadline: new Date("2023-12-31").toISOString(),
-//     eventName: "Summer Concert 2023",
-//     eventDate: new Date("2023-07-15").toISOString(),
-//     eventImage: "/placeholder.svg",
-//     isSold: false,
-//     buyer: null,
-//     seller: "0x1234...5678",
-//   };
-//   return ticket;
-// }
-
 interface Props {
   ticketId: string;
 }
