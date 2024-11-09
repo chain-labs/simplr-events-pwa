@@ -1,5 +1,3 @@
-import { ObjectId } from "mongodb";
-
 import clientPromise from "../../../lib/mongodb";
 
 const dbName = "simplr-events";
@@ -21,10 +19,10 @@ export async function POST(request) {
     }
 
     console.log({
-        userId: user._id,
-        ticketId,
-        signature,
-      })
+      userId: user._id,
+      ticketId,
+      signature,
+    });
     const result = await db.collection("listings").insertOne({
       userId: user._id,
       ticketId,

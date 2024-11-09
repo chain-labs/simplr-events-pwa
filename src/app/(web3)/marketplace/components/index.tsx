@@ -19,7 +19,8 @@ const MarketplaceComponent = () => {
             `/api/users?address=${account.address}`
           );
           console.log({ response: response.data });
-        } catch (err) {
+        } catch (e) {
+          console.log({ error: e });
           const email = prompt("Please enter your email address:");
           if (email) {
             try {

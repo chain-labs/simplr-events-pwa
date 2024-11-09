@@ -2,10 +2,32 @@
 
 import React, { useState } from "react";
 import { useWriteContract } from "wagmi";
+import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useEventContract from "@/abi/Event";
+import { envVars } from "@/lib/envVars";
+
+const getLatestTokenId = async (event: string) => {
+  const query = `query MyQuery($id: String!) {
+    event(id: $id) {
+  tickets(orderBy: "id", orderDirection: "desc", limit: 1) {
+    items {
+      id
+    }
+  }
+}
+}`;
+  const variables = { id: `event-${event}` };
+
+  const response = await axios.post(envVars.subgraphUrl, { query, variables });
+  console.log({ response });
+
+  const tokenId =
+    response.data.data.event?.tickets?.items?.[0]?.id.split("-")[2] ?? "0";
+  return `${Number(tokenId) + 1}`;
+};
 
 export default function NFTMinter() {
   const [seat, setSeat] = useState("");
@@ -17,10 +39,38 @@ export default function NFTMinter() {
 
   const { writeContractAsync: mintWrite } = useWriteContract();
 
+  const METADATA_URI = "/api/metadata";
+
   const handleMint = async () => {
     setIsMinting(true);
     try {
       // upload metadata and get uri
+      const tokenId = await getLatestTokenId(EventContract.address);
+      const data = {
+        tokenId,
+        eventContract: EventContract.address,
+        name: "Devcon 2024 Test",
+        description: "NFT Ticket provided by Simplr Events for Devcon 2024",
+        image:
+          "https://ik.imagekit.io/chainlabs/Simplr_Events/devcon-banner_8zI7q3HB15.jpg?updatedAt=1731136738067",
+        attributes: [
+          {
+            trait_type: "Seat Number",
+            value: seat,
+          },
+          {
+            trait_type: "Event Name",
+            value: "Devcon 2024",
+          },
+          {
+            trait_type: "Event Date",
+            value: "12-11-2024",
+          },
+        ],
+      };
+      const uploadResponse = await axios.post(METADATA_URI, data);
+      console.log({ uploadResponse });
+
       await mintWrite({
         address: EventContract?.address,
         abi: EventContract?.abi,
@@ -31,7 +81,7 @@ export default function NFTMinter() {
             seat,
             verificationData: "", // bytes data
             ticketEncryptedDataUri: "", // lit protocol's encrypted data
-            ticketMetadata: "", // public metadata
+            ticketMetadata: `https://simplrhq.com/api/metadata/${EventContract.address}/${tokenId}`, // public metadata
           },
         ] as const,
       });
@@ -55,7 +105,7 @@ export default function NFTMinter() {
         <Input
           type="text"
           value={seat}
-          onChange={(e) => setSeat(e.target.value)}
+          onChange={e => setSeat(e.target.value)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-yellow-50"
         />
       </div>
@@ -66,7 +116,7 @@ export default function NFTMinter() {
         <Input
           type="text"
           value={ticketSerialNumberHash}
-          onChange={(e) => setTicketSerialNumberHash(e.target.value)}
+          onChange={e => setTicketSerialNumberHash(e.target.value)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm bg-yellow-50"
         />
       </div>

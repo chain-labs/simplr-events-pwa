@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useAccount, useConfig, useWriteContract } from "wagmi";
-import { waitForTransactionReceipt } from "@wagmi/core";
+import { useAccount } from "wagmi";
 import { formatUnits } from "viem";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,61 +12,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import usePaymentTokenContract from "@/abi/PaymentToken";
+import useEventContract from "@/abi/Event";
 
 import { ITicketListed } from "../types";
-import axios from "axios";
-import useEventContract from "@/abi/Event";
-import useMarketplaceContract from "@/abi/Marketplace";
-import Link from "next/link";
 
 const ListedTicketCard = ({ ticket }: { ticket: ITicketListed }) => {
-  const { writeContractAsync: buyTicket } = useWriteContract();
   const account = useAccount();
   const [showModal, setShowModal] = useState(false);
 
   const EventContract = useEventContract();
-  const MarketplaceContract = useMarketplaceContract();
   const PTContract = usePaymentTokenContract(); // Payment Token Contract
-
-  const config = useConfig();
-
-  const handleBuy = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const userConfirmed = window.confirm(
-      "Are you sure you want to buy this ticket?"
-    );
-    if (!userConfirmed) {
-      return;
-    }
-    try {
-      const signatureResponse = await axios.get(
-        `/api/listings?ticketId=ticket-${EventContract.address}-${ticket.tokenId}`
-      );
-      const signature = signatureResponse.data.signature;
-      console.log({ signature });
-
-      const tx = await buyTicket?.({
-        address: MarketplaceContract.address,
-        abi: MarketplaceContract.abi,
-        functionName: "purchaseTicket",
-        args: [
-          {
-            eventContract: EventContract.address,
-            tokenId: BigInt(ticket.tokenId),
-            price: BigInt(ticket.price),
-            seller: ticket.owner,
-            deadline: BigInt(ticket.deadline),
-          },
-          signature,
-        ],
-      });
-
-      const reciept = await waitForTransactionReceipt(config, { hash: tx });
-      console.log({ reciept });
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const handleCancelListing = () => {
     // Logic to handle listing cancellation

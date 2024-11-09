@@ -13,7 +13,7 @@ export async function GET(req, { params }) {
 
     const response = await collection.findOne({ tokenId, event });
 
-    if (!metadata) {
+    if (!response) {
       return new Response("Metadata not found", { status: 404 });
     }
 

@@ -1,11 +1,13 @@
+import React from "react";
 import { notFound } from "next/navigation";
+
 import TicketComponent from "./components";
 
 // Simulated function to fetch ticket data
 // async function getTicket(id: string) {
 //   // In a real application, you would fetch this data from your API or database
 //   const ticket = {
-//     id, // already have 
+//     id, // already have
 //     seatNo: "A1", // subgraph
 //     serialNumber: "T12345", // subgraph
 //     price: 100, // subgraph
@@ -34,7 +36,9 @@ export default async function TicketPage({
         }
       );
       const data = await response.json();
-      if (data) return true;
+      if (data) {
+        return true;
+      }
     } catch (err) {
       console.error(err);
       return false;
@@ -42,9 +46,8 @@ export default async function TicketPage({
   };
   const ticketId = (await params).id;
   console.log({ ticketId });
-    const ticketListed = await checkTicket(ticketId);
-    
-    
+  const ticketListed = await checkTicket(ticketId);
+
   if (!ticketListed) {
     notFound();
   }

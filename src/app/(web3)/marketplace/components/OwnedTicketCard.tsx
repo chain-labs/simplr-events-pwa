@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAccount, useConfig, useWriteContract } from "wagmi";
 import { arbitrumSepolia } from "viem/chains";
 import { parseUnits } from "viem";
+import axios from "axios";
 import { getWalletClient, waitForTransactionReceipt } from "@wagmi/core";
 
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,6 @@ import usePaymentTokenContract from "@/abi/PaymentToken";
 import useEventContract from "@/abi/Event";
 
 import { ITicket } from "../types"; // You'll need to move the type to a separate file
-import axios from "axios";
 
 type OwnedTicketCardProps = {
   ticket: ITicket;
