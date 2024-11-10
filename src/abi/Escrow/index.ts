@@ -9,11 +9,16 @@ import abi from "./abi.json";
 
 const { isTestNetwork } = envVars;
 
+export type IContract = {
+  abi: any;
+  address: `0x${string}`;
+};
+
 const useEscrowContract = () => {
-  const [contractDetails, setContractDetails] = useState<{
-    abi: any;
-    address: `0x${string}`;
-  }>({ address: "0x", abi });
+  const [contractDetails, setContractDetails] = useState<IContract>({
+    address: "0x",
+    abi,
+  });
 
   useEffect(() => {
     const address = isTestNetwork

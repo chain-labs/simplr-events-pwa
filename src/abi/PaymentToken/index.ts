@@ -9,12 +9,18 @@ import abi from "./abi.json";
 
 const { isTestNetwork } = envVars;
 
+export type IPaymentContract = {
+  abi: any;
+  address: `0x${string}`;
+  decimals: number;
+};
+
 const usePaymentTokenContract = () => {
-  const [contract, setContract] = useState<{
-    abi: any;
-    address: `0x${string}`;
-    decimals: number;
-  }>({ abi, address: "0x", decimals: 18 });
+  const [contract, setContract] = useState<IPaymentContract>({
+    abi,
+    address: "0x",
+    decimals: envVars.isTestNetwork ? 18 : 6,
+  });
 
   useEffect(() => {
     if (isTestNetwork) {

@@ -7,6 +7,7 @@ import { http, WagmiProvider } from "wagmi";
 import { arbitrum, arbitrumSepolia } from "wagmi/chains";
 // import { publicProvider } from "wagmi/providers/public";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Navbar from "@/components/Navbar";
 
 const config = getDefaultConfig({
   appName: "Web3 Ticket Marketplace",
@@ -36,7 +37,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <body>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider>{children}</RainbowKitProvider>
+          <RainbowKitProvider>
+            <Navbar />
+            {children}
+          </RainbowKitProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </body>

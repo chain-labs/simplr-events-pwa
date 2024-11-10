@@ -11,7 +11,7 @@ const useMarketplaceData = () => {
   const account = useAccount();
   const [marketTickets, setMarketTickets] = useState<ITicketListed[]>([]);
   const [userTickets, setUserTickets] = useState<ITicket[]>([]);
-  
+
   useEffect(() => {
     if (account.address) {
       const getAllTickets = async () => {
@@ -44,14 +44,17 @@ const useMarketplaceData = () => {
         const marketTickets: ITicketListed[] = listings.map(
           (item: { ticketId: string; price: string; deadline: string }) => {
             const metadata = tickets[item.ticketId];
+            if (!metadata) {
+              return null;
+            }
             return {
               event: {
-                name: metadata.event.name,
-                date: metadata.event.eventDate,
+                name: metadata?.event?.name,
+                date: metadata?.event?.eventDate,
               },
-              owner: metadata.owner,
-              seat: metadata.seat,
-              ticketSerialNumberHash: metadata.ticketSerialNumberHash,
+              owner: metadata?.owner,
+              seat: metadata?.seat,
+              ticketSerialNumberHash: metadata?.ticketSerialNumberHash,
               tokenId: item.ticketId.split("-")[2],
               listed: true,
               price: item.price,
@@ -59,9 +62,13 @@ const useMarketplaceData = () => {
             };
           }
         );
+        console.log({ marketTickets });
         const userTicketsTemp: ITicket[] = userTickets.map(
           (item: { id: string }) => {
             const metadata = tickets[item.id];
+            if (!metadata) {
+              return null;
+            }
             return {
               event: {
                 name: metadata.event.name,
@@ -80,8 +87,8 @@ const useMarketplaceData = () => {
             };
           }
         );
-        setMarketTickets(marketTickets);
-        setUserTickets(userTicketsTemp);
+        setMarketTickets(marketTickets.filter(ticket => ticket !== null));
+        setUserTickets(userTicketsTemp.filter(ticket => ticket !== null));
       };
       getAllTickets();
     }

@@ -5,14 +5,12 @@ import { envVars } from "@/lib/envVars";
 import { CONTRACTS } from "@/abi/contracts";
 
 import abi from "./abi.json";
+import { IContract } from "../Escrow";
 
 const { isTestNetwork } = envVars;
 
 const useEventContract = () => {
-  const [contract, setContract] = useState<{
-    abi: any;
-    address: `0x${string}`;
-  }>({ abi, address: "0x" });
+  const [contract, setContract] = useState<IContract>({ abi, address: "0x" });
 
   useEffect(() => {
     if (isTestNetwork) {
