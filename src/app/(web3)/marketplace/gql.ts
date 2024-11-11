@@ -36,7 +36,7 @@ export const getOwnedTickets = `query MyQuery($id: String!) {
   }
 }`;
 
-export const getMarketplaceTicketsListWithUser = `query MyQuery($id: String!) {
+export const getMarketplaceTicketsListWithUser = `query MyQuery {
   listings(where: { state: LISTED }) {
     items {
       deadline
@@ -44,14 +44,6 @@ export const getMarketplaceTicketsListWithUser = `query MyQuery($id: String!) {
       sellerId
       ticketId
     }
-  }
-  user(id: $id) {
-    ticketsOwned {
-      items {
-        id
-      }
-    }
-    address
   }
 }`;
 

@@ -4,8 +4,9 @@ import { arbitrum, arbitrumSepolia } from "wagmi/chains";
 import { envVars } from "@/lib/envVars";
 import { CONTRACTS } from "@/abi/contracts";
 
-import abi from "./abi.json";
 import { IContract } from "../Escrow";
+
+import abi from "./abi.json";
 
 const { isTestNetwork } = envVars;
 

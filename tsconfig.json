@@ -23,6 +23,13 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/users/route.js", "src/app/api/metadata/[event]/[tokenId]/route.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/api/users/route.js",
+    "src/app/api/metadata/[event]/[tokenId]/route.js"
+, "src/app/api/email/route.js"  ],
   "exclude": ["node_modules"]
 }

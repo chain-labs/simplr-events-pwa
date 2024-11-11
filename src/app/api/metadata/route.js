@@ -1,6 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 
-const dbName = "simplr-events";
+const dbName = process.env.MONGODB_DB_NAME;
 
 export async function POST(req) {
     try {
@@ -22,12 +22,9 @@ export async function POST(req) {
         const collection = db.collection("nftMetadata");
 
         // Check if metadata with the same tokenId already exists
-        const existing = await collection.findOne({ tokenId, eventContract });
+        const existing = await collection.findOne({ tokenId, event: eventContract });
         if (existing) {
-            return new Response(
-                JSON.stringify({ error: "Metadata with this tokenId already exists." }),
-                { status: 400 }
-            );
+          await collection.deleteOne(existing);
         }
 
         // Insert the new metadata

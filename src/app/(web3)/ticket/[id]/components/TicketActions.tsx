@@ -10,6 +10,7 @@ import {
 import { waitForTransactionReceipt } from "@wagmi/core";
 import { formatUnits } from "viem";
 import axios from "axios";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 import { Button } from "@/components/ui/button";
 import usePaymentTokenContract from "@/abi/PaymentToken";
@@ -18,6 +19,7 @@ import useEventContract from "@/abi/Event";
 import useEscrowContract from "@/abi/Escrow";
 
 import { TicketMetadata } from ".";
+import { AlertCircle, CheckCircle, XCircle } from "lucide-react";
 
 type UserRole = "buyer" | "seller" | "other";
 
@@ -29,6 +31,9 @@ export default function TicketActions({
   refreshTicket: () => void;
 }) {
   const [isSold, setIsSold] = useState(ticket.isSold);
+  const [status, setStatus] = useState<"pending" | "disputed" | "resolved">(
+    ticket.isDisputed ? "disputed" : ticket.isResolved ? "resolved" : "pending"
+  );
 
   // Simulated function to get current user's wallet address
   const account = useAccount();
@@ -118,6 +123,15 @@ export default function TicketActions({
       console.log({ reciept });
 
       setIsSold(true);
+      axios
+        .post("/api/email", {
+          tokenId: ticket.id.split("-")[2],
+          seller: ticket.seller,
+          buyer: userWallet,
+        })
+        .then(() => {
+          console.log("Email sent to seller!");
+        });
     } catch (err) {
       console.error(err);
     }
@@ -204,16 +218,26 @@ export default function TicketActions({
             <li>Arrive at the venue at least 30 minutes before the event</li>
             <li>Present this ticket at the entrance</li>
             <li>
-              Confirm that you have recieved the ticket from the seller by
+              Confirm that you have received the ticket from the seller by
               clicking on the button below ⬇️
             </li>
           </ol>
-          {ticket.isDisputed ? (
-            <Button className="w-full">Purchase Disputed by Seller</Button>
-          ) : ticket.isResolved ? (
-            <Button className="w-full bg-green-900">
-              Purchase Confirmed by Buyer!
-            </Button>
+          {status === "disputed" ? (
+            <Alert variant="destructive">
+              <XCircle className="h-4 w-4" />
+              <AlertTitle>Purchase Disputed</AlertTitle>
+              <AlertDescription>
+                The seller has disputed this purchase.
+              </AlertDescription>
+            </Alert>
+          ) : status === "resolved" ? (
+            <Alert variant="default">
+              <CheckCircle className="h-4 w-4" />
+              <AlertTitle>Purchase Confirmed</AlertTitle>
+              <AlertDescription>
+                You have confirmed the purchase.
+              </AlertDescription>
+            </Alert>
           ) : (
             <Button onClick={handleConfirmBuy} className="w-full">
               Confirm Purchase
@@ -228,21 +252,27 @@ export default function TicketActions({
             <li>Ensure the ticket information is up to date</li>
             <li>
               Transfer the ticket to the buyer and wait for them to confirm to
-              recieve your payment
+              receive your payment
             </li>
             <li>
               Click on the dispute button below ⬇️ if you have any issues with
               the buyer
             </li>
           </ol>
-          {ticket.isDisputed ? (
-            <Button disabled className="w-full bg-red-950">
-              Purchase Disputed
-            </Button>
-          ) : ticket.isResolved ? (
-            <Button disabled className="w-full bg-green-900">
-              Purchase Confirmed!
-            </Button>
+          {status === "disputed" ? (
+            <Alert variant="destructive">
+              <XCircle className="h-4 w-4" />
+              <AlertTitle>Purchase Disputed</AlertTitle>
+              <AlertDescription>You have disputed this sale.</AlertDescription>
+            </Alert>
+          ) : status === "resolved" ? (
+            <Alert variant="default">
+              <CheckCircle className="h-4 w-4" />
+              <AlertTitle>Purchase Confirmed</AlertTitle>
+              <AlertDescription>
+                The buyer has confirmed the purchase.
+              </AlertDescription>
+            </Alert>
           ) : (
             <Button
               onClick={handleDispute}
@@ -255,7 +285,13 @@ export default function TicketActions({
         </div>
       )}
       {userRole === "other" && (
-        <p>This ticket is no longer available for purchase.</p>
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Ticket Unavailable</AlertTitle>
+          <AlertDescription>
+            This ticket is no longer available for purchase.
+          </AlertDescription>
+        </Alert>
       )}
     </div>
   );

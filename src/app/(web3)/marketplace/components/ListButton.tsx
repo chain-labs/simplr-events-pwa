@@ -1,5 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import React, { useState, useEffect } from "react";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -7,13 +10,12 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
-import useListingTicket from "../hooks/useListingTicket";
 import useEventContract from "@/abi/Event";
 import useMarketplaceContract from "@/abi/Marketplace";
 import usePaymentTokenContract from "@/abi/PaymentToken";
+
+import useListingTicket from "../hooks/useListingTicket";
 
 // Types and Interfaces
 export interface FormData {

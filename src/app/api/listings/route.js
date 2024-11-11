@@ -1,6 +1,6 @@
 import clientPromise from "../../../lib/mongodb";
 
-const dbName = "simplr-events";
+const dbName = process.env.MONGODB_DB_NAME;
 
 export async function POST(request) {
     const client = await clientPromise;

@@ -1,12 +1,12 @@
 import clientPromise from "../../../lib/mongodb";
 
-const dbName = "simplr-events";
+const dbName = process.env.MONGODB_DB_NAME;
 
 export async function POST(request) {
   const client = await clientPromise;
   const db = client.db(dbName);
   
-  const { email, address } = await request.json();
+  const { email, address, name } = await request.json();
 
   try {
     const existingUser = await db.collection("users").findOne({ email });
@@ -15,7 +15,7 @@ export async function POST(request) {
         status: 409,
       });
     }
-    const result = await db.collection("users").insertOne({ email, address });
+    const result = await db.collection("users").insertOne({ email, address, name });
     return new Response(JSON.stringify({ userId: result.insertedId }), {
       status: 201,
     });

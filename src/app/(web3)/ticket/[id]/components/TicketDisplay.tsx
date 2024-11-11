@@ -3,14 +3,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { formatUnits } from "viem";
-import axios from "axios";
 import { Calendar, MapPin, QrCode, Tag, Timer } from "lucide-react";
+import axios from "axios";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { envVars } from "@/lib/envVars";
+import { Badge } from "@/components/ui/badge";
 import usePaymentTokenContract from "@/abi/PaymentToken";
 import useEscrowContract from "@/abi/Escrow";
-import { Badge } from "@/components/ui/badge";
+import { envVars } from "@/lib/envVars";
 
 import { GetEscrowDetails, GetTicketDetailsQuery } from "../gql";
 
@@ -89,7 +89,7 @@ export const checkEscrowStatus = async (
   return { isDisputed, isResolved };
 };
 
-export default function TicketComponent({ ticketId }: Props) {
+export default function TicketDisplay({ ticketId }: Props) {
   const [ticket, setTicket] = useState<TicketMetadata>();
   const PTContract = usePaymentTokenContract();
   const EscrowContract = useEscrowContract();
@@ -109,7 +109,16 @@ export default function TicketComponent({ ticketId }: Props) {
   }, [ticketId, refreshTicket, EscrowContract]);
 
   if (!ticket) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="loader mb-4"></div>
+          <p className="text-lg font-medium text-gray-700">
+            Loading ticket details...
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -118,8 +127,8 @@ export default function TicketComponent({ ticketId }: Props) {
         <Card className="overflow-hidden bg-white/80 backdrop-blur-sm shadow-xl">
           <div className="relative h-64 sm:h-80">
             <Image
-              src={ticket.eventImage}
-              alt={ticket.eventName}
+              src={ticket?.eventImage ?? "https://placehold.co/1920x1080"}
+              alt={ticket?.eventName ?? "logo"}
               layout="fill"
               objectFit="cover"
               className="transition-transform duration-300 hover:scale-105"
@@ -128,28 +137,28 @@ export default function TicketComponent({ ticketId }: Props) {
               <div className="p-6 w-full">
                 <Badge className="mb-2" variant="secondary">
                   {new Date(
-                    Number(ticket.eventDate) * 1000
+                    Number(ticket?.eventDate) * 1000
                   ).toLocaleDateString()}
                 </Badge>
                 <h1 className="text-3xl font-bold text-white mb-2">
-                  {ticket.eventName}
+                  {ticket?.eventName}
                 </h1>
               </div>
             </div>
           </div>
           <CardContent className="p-6">
             <div className="grid grid-cols-2 gap-6 mb-6">
-              <InfoItem icon={MapPin} label="Seat No" value={ticket.seatNo} />
+              <InfoItem icon={MapPin} label="Seat No" value={ticket?.seatNo} />
               <InfoItem
                 icon={QrCode}
                 label="Serial Number"
-                value={ticket.serialNumber}
+                value={ticket?.serialNumber ?? "-"}
               />
               <InfoItem
                 icon={Tag}
                 label="Price"
                 value={`${formatUnits(
-                  BigInt(ticket.price),
+                  BigInt(ticket?.price ?? "0"),
                   PTContract.decimals
                 )} USDC`}
               />
@@ -157,14 +166,14 @@ export default function TicketComponent({ ticketId }: Props) {
                 icon={Timer}
                 label="Listing Deadline"
                 value={new Date(
-                  Number(ticket.deadline) * 1000
+                  Number(ticket?.deadline) * 1000
                 ).toLocaleString()}
               />
               <InfoItem
                 icon={Calendar}
                 label="Event Date"
                 value={new Date(
-                  Number(ticket.eventDate) * 1000
+                  Number(ticket?.eventDate) * 1000
                 ).toLocaleString()}
               />
             </div>
@@ -181,7 +190,7 @@ function InfoItem({
   label,
   value,
 }: {
-  icon: any;
+  icon: React.ElementType;
   label: string;
   value: string;
 }) {
