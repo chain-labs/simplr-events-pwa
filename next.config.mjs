@@ -4,10 +4,19 @@ const nextConfig = {
         config.resolve.fallback = { fs: false, net: false, tls: false };
         config.externals.push("pino-pretty", "encoding");
         return config;
-  },
-  images: {
-    domains: ["ik.imagekit.io"]
-  }
+    },
+    images: {
+        domains: ["ik.imagekit.io"]
+    },
+    async redirects() {
+        return [
+            {
+                source: '/',
+                destination: '/marketplace',
+                permanent: true,
+            },
+        ];
+    },
 };
 
 export default nextConfig;
