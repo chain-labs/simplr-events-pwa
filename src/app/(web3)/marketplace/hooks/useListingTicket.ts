@@ -1,6 +1,15 @@
-import { getWalletClient, waitForTransactionReceipt } from "@wagmi/core";
+import {
+  getWalletClient,
+  waitForTransactionReceipt,
+  readContract,
+} from "@wagmi/core";
 import axios from "axios";
-import { useAccount, useConfig, useWriteContract } from "wagmi";
+import {
+  useAccount,
+  useConfig,
+  usePublicClient,
+  useWriteContract,
+} from "wagmi";
 import { arbitrum, arbitrumSepolia } from "viem/chains";
 import { parseUnits } from "viem";
 
@@ -17,21 +26,23 @@ type Props = {
 const DEADLINE = "1731676800"; // 15th November 2024 4pm Thailand time
 
 const getLatestTokenId = async (event: string) => {
-  const query = `query MyQuery($id: String!) {
-    event(id: $id) {
-        tickets {
-            items {
-                id
-            }
-        }
-    }
-  }`;
-  const variables = { id: `event-${event}` };
+  // const query = `query MyQuery($id: String!) {
+  //   event(id: $id) {
+  //       tickets {
+  //           items {
+  //               id
+  //           }
+  //       }
+  //   }
+  // }`;
+  // const variables = { id: `event-${event}` };
 
-  const response = await axios.post(envVars.subgraphUrl, { query, variables });
+  // const response = await axios.post(envVars.subgraphUrl, { query, variables });
+
+  const response = await axios.get(`/api/metadata?event=${event}`);
   console.log({ response });
 
-  const tokenId = response.data.data.event?.tickets?.items.length ?? 0;
+  const tokenId = response.data.count ?? 0;
   console.log("Fetched: ", { tokenId });
   return `${tokenId + 1}`;
 };
@@ -42,11 +53,18 @@ const useListingTicket = ({ formData }: Props) => {
   const { writeContractAsync: approveTransfer } = useWriteContract();
   const { writeContractAsync: mintWrite } = useWriteContract();
   const config = useConfig();
+  const client = usePublicClient();
 
   const handleMint = async (EventContract: IContract) => {
     // upload metadata and get uri
-    const tokenId = await getLatestTokenId(EventContract.address);
-    console.log({ formData });
+    const tokenIdCounter = await readContract(config, {
+      abi: EventContract.abi,
+      address: EventContract.address,
+      functionName: "tokenIdCounter",
+      args: [],
+    });
+    const tokenId = ((tokenIdCounter as bigint) + BigInt(1)).toString();
+    console.log({ tokenId });
     const data = {
       tokenId,
       eventContract: EventContract.address,
@@ -70,9 +88,11 @@ const useListingTicket = ({ formData }: Props) => {
       ],
     };
     const uploadResponse = await axios.post("/api/metadata", data);
-    console.log({ uploadResponse });
+    console.log({
+      uploadResponse,
+    });
 
-    await mintWrite({
+    const options = {
       address: EventContract?.address,
       abi: EventContract?.abi,
       functionName: "createTicket",
@@ -89,8 +109,21 @@ const useListingTicket = ({ formData }: Props) => {
           }/api/metadata/${EventContract.address}/${tokenId}`, // public metadata
         },
       ] as const,
+    };
+
+    const sim = await client?.estimateContractGas({
+      ...options,
+      account: account.address,
     });
 
+    console.log({ mintGas: sim });
+    const finalGas = (sim as bigint) + (sim as bigint) / BigInt(2);
+    const mintTx = await mintWrite({
+      ...options,
+      gas: finalGas,
+    });
+    const receipt = await waitForTransactionReceipt(config, { hash: mintTx });
+    console.log({ receipt });
     return tokenId;
   };
 
@@ -100,12 +133,20 @@ const useListingTicket = ({ formData }: Props) => {
   ) => {
     console.log({ formData });
 
-    const approveTx = await approveTransfer({
+    const options = {
       address: EventContract.address,
       abi: EventContract.abi,
       functionName: "setApprovalForAll",
       args: [MarketplaceContract.address, true],
+    };
+
+    const sim = await client?.estimateContractGas({
+      ...options,
+      account: account.address,
     });
+    console.log({ approveGas: (sim as bigint) + BigInt(150000) });
+
+    const approveTx = await approveTransfer({ ...options, gas: sim });
     const receipt = await waitForTransactionReceipt(config, {
       hash: approveTx,
     });
@@ -166,12 +207,11 @@ const useListingTicket = ({ formData }: Props) => {
     signature: string,
     tokenId: string,
     EventContract: IContract,
-    MarketplaceContract: IContract
+    MarketplaceContract: IContract,
+    PTContract: IPaymentContract
   ) => {
     if (formData.price && signature) {
-      console.log({ formData });
-
-      const tx = await listTicket?.({
+      const options = {
         address: MarketplaceContract.address,
         abi: MarketplaceContract.abi,
         functionName: "listTicket",
@@ -179,16 +219,29 @@ const useListingTicket = ({ formData }: Props) => {
           {
             eventContract: EventContract.address,
             tokenId: tokenId,
-            price: parseUnits(formData.price, 18),
+            price: parseUnits(formData.price, PTContract.decimals),
             seller: account.address as `0x${string}`,
             deadline: BigInt(DEADLINE),
           },
         ],
+      };
+
+      const sim = await client?.estimateContractGas({
+        ...options,
+        account: account.address,
+      });
+
+      console.log({ listGas: sim });
+
+      const tx = await listTicket?.({
+        ...options,
+        gas: (sim as bigint) + BigInt(100000),
       });
 
       const transactionReceipt = await waitForTransactionReceipt(config, {
         hash: tx,
       });
+
       if (transactionReceipt) {
         const response = await axios.post("/api/listings", {
           sellerAddress: account.address,

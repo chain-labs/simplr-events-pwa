@@ -2,6 +2,28 @@ import clientPromise from "../../../lib/mongodb";
 
 const dbName = process.env.MONGODB_DB_NAME;
 
+export async function GET(req) {
+  // Connect to MongoDB
+  const client = await clientPromise;
+  const db = client.db(dbName);
+
+  const searchParams = req.nextUrl.searchParams;
+  const userAddress = searchParams.get("event");
+  try {
+    const collection = db.collection("nftMetadata");
+
+    // Fetch the count of all nftMetadata entries
+    const count = await collection.countDocuments();
+
+    return new Response(JSON.stringify({ count }), { status: 200 });
+  } catch (error) {
+    console.error("Error fetching metadata count:", error);
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+    });
+  }
+}
+
 export async function POST(req) {
     try {
         // Parse the incoming JSON body

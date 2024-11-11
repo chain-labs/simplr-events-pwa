@@ -44,7 +44,7 @@ export default function Navbar() {
     <nav className="bg-slate-700 border-b py-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex">
+          <div className="flex items-center gap-x-6">
             <Link
               href="/marketplace"
               className="flex-shrink-0 flex items-center"
@@ -53,17 +53,29 @@ export default function Navbar() {
                 <img src="/images/logo.svg" alt="logo" />
               </div>
             </Link>
-          </div>
-          <div className="flex items-center gap-x-4">
             {account.address && (
               <Link href={"/my-tickets"}>
-                <p className="font-semibold text-white cursor-pointer">
+                <p className="font-normal text-white cursor-pointer">
                   My Tickets
                 </p>
               </Link>
             )}
+            <Link href={"/marketplace"}>
+              <p className="font-normal text-white cursor-pointer">
+                Marketplace
+              </p>
+            </Link>
+          </div>
+          <div className="flex items-center gap-x-4">
             {account.address && <TicketListingFlow />}
             <ConnectButton />
+            <a
+              href={"https://t.me/+oXNaYmx7iwY3NjU1"}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <p className="font-normal text-white cursor-pointer">Telegram</p>
+            </a>
           </div>
         </div>
       </div>

@@ -119,7 +119,7 @@ export const getSellerEmailTemplate = ({
               </ol>
           </div>
           
-          <p>If you have any questions or need assistance with the transfer process, please don't hesitate to contact our team (telegram: @textonlypls).</p>
+          <p>If you have any questions or need assistance with the transfer process, please don't hesitate to contact our team  <span><a href="https://t.me/+oXNaYmx7iwY3NjU1" target="_blank">Telegram</a></span>).</p>
           
           <div class="footer">
               <p>Best regards,<br>Simplr Events Team</p>
@@ -160,7 +160,7 @@ export const getSellerEmailTemplate = ({
   2. The buyer will then mark the order as finalized in our system
   3. Upon confirmation, your payment will be processed and sent to your registered account
   
-  If you have any questions or need assistance with the transfer process, please don't hesitate to contact our team (telegram: @textonlypls).
+  If you have any questions or need assistance with the transfer process, please don't hesitate to contact our team (telegram: https://t.me/+oXNaYmx7iwY3NjU1).
   
   Best regards,
   Simplr Events Team

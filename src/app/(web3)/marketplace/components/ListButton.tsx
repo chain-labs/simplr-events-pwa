@@ -208,7 +208,8 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           signature,
           tokenId,
           EventContract,
-          MarketplaceContract
+          MarketplaceContract,
+          PTContract
         );
         incrementProgress(4);
       } catch (err) {
@@ -337,7 +338,12 @@ const TicketListingFlow: React.FC = () => {
 
   return (
     <div>
-      <Button onClick={openModal}>List your Ticket Here</Button>
+      <Button
+        onClick={openModal}
+        className="bg-slate-100 text-black rounded-[6px] hover:bg-slate-800 hover:text-white"
+      >
+        List your Ticket Here
+      </Button>
       {/* Only render Dialog when mounted to prevent hydration mismatch */}
       {mounted && (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>

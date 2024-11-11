@@ -4,14 +4,22 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   useAccount,
   useConfig,
+  usePublicClient,
   useReadContract,
   useWriteContract,
 } from "wagmi";
-import { waitForTransactionReceipt } from "@wagmi/core";
+import { waitForTransactionReceipt, estimateGas } from "@wagmi/core";
 import { formatUnits } from "viem";
-import { AlertCircle, CheckCircle, XCircle } from "lucide-react";
 import axios from "axios";
+import { AlertCircle, CheckCircle, XCircle } from "lucide-react";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import usePaymentTokenContract from "@/abi/PaymentToken";
@@ -48,6 +56,7 @@ export default function TicketActions({
 
   const config = useConfig();
   const userWallet = account.address;
+  const client = usePublicClient();
 
   const userRole: UserRole = useMemo(() => {
     const role =
@@ -77,23 +86,31 @@ export default function TicketActions({
     return BigInt(0);
   }, [allowanceData, allowanceFetched]);
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [dialogState, setDialogState] = useState<"pending" | "success">(
+    "pending"
+  );
+
   const handleBuy = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const userConfirmed = window.confirm(
-      "Are you sure you want to buy this ticket?"
-    );
-    if (!userConfirmed) {
-      return;
-    }
+    setIsDialogOpen(true);
+    setDialogState("pending");
+
     try {
       if (allowance < BigInt(ticket.price)) {
         const requiredFundsToAllow = BigInt(ticket.price) - allowance;
-        const allowanceTx = await setAllowance({
+        const allowOptions = {
           address: PTContract.address,
           abi: PTContract.abi,
           functionName: "approve",
           args: [MarketplaceContract.address, requiredFundsToAllow],
+        };
+
+        const sim = await client?.estimateGas({
+          ...allowOptions,
+          account: account.address,
         });
+        const allowanceTx = await setAllowance({ ...allowOptions, gas: sim });
         await waitForTransactionReceipt(config, { hash: allowanceTx });
       }
       const tokenId = ticket.id.split("-")[2];
@@ -101,9 +118,7 @@ export default function TicketActions({
         `/api/listings?ticketId=ticket-${EventContract.address}-${tokenId}`
       );
       const signature = signatureResponse.data.signature;
-      console.log({ signature });
-
-      const tx = await buyTicket?.({
+      const mintOptions = {
         address: MarketplaceContract.address,
         abi: MarketplaceContract.abi,
         functionName: "purchaseTicket",
@@ -117,23 +132,30 @@ export default function TicketActions({
           },
           signature,
         ],
+      };
+      const sim = await client?.estimateGas({
+        ...mintOptions,
+        account: account.address,
+      });
+      console.log({ sim });
+      const tx = await buyTicket({
+        ...mintOptions,
+        gas: BigInt(Math.max(Number(sim as bigint) + 200000, 2000000)),
       });
 
-      const reciept = await waitForTransactionReceipt(config, { hash: tx });
-      console.log({ reciept });
+      await waitForTransactionReceipt(config, { hash: tx });
 
       setIsSold(true);
-      axios
-        .post("/api/email", {
-          tokenId: ticket.id.split("-")[2],
-          seller: ticket.seller,
-          buyer: userWallet,
-        })
-        .then(() => {
-          console.log("Email sent to seller!");
-        });
+      setDialogState("success");
+
+      await axios.post("/api/email", {
+        tokenId: ticket.id.split("-")[2],
+        seller: ticket.seller,
+        buyer: userWallet,
+      });
     } catch (err) {
       console.error(err);
+      setIsDialogOpen(false);
     }
   };
 
@@ -203,6 +225,11 @@ export default function TicketActions({
           Buy Ticket for{" "}
           {formatUnits(BigInt(ticket.price), PTContract.decimals)} USDC
         </Button>
+        <PurchaseDialog
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          state={dialogState}
+        />
       </div>
     );
   }
@@ -294,5 +321,42 @@ export default function TicketActions({
         </Alert>
       )}
     </div>
+  );
+}
+
+function PurchaseDialog({
+  isOpen,
+  onClose,
+  state,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  state: "pending" | "success";
+}) {
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            {state === "pending" ? "Purchasing Ticket" : "Purchase Successful"}
+          </DialogTitle>
+
+          {state === "pending" ? (
+            <div className="flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+              <span className="ml-2">Processing your purchase...</span>
+            </div>
+          ) : (
+            <div className="text-center">
+              <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+              <p>Your ticket has been successfully purchased!</p>
+              <Button onClick={onClose} className="mt-4">
+                Close
+              </Button>
+            </div>
+          )}
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
   );
 }

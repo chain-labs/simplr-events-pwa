@@ -43,6 +43,17 @@ export const getMarketplaceTicketsListWithUser = `query MyQuery {
       price
       sellerId
       ticketId
+      ticket {
+        event {
+          name
+          eventDate
+        }
+        seat
+        ticketSerialNumberHash
+        tokenMetadata
+        ownerId
+        id
+      }
     }
   }
 }`;

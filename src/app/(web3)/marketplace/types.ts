@@ -1,5 +1,5 @@
 export type ITicket = {
-  event: { name: string; date: number };
+  event: { name: string; date: number; image: string };
   owner: string;
   seat: string;
   ticketSerialNumberHash: string;

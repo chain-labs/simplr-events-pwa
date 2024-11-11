@@ -1,9 +1,7 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import React from "react";
 import { CalendarIcon, MapPinIcon, TicketIcon } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 import { formatUnits } from "viem";
 
 import {
@@ -14,60 +12,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ITicketListed } from "../../marketplace/types";
-import useMyTicketsData from "../hooks/useMyTicketsData";
 import useEventContract from "@/abi/Event";
 import usePaymentTokenContract from "@/abi/PaymentToken";
 
-type Ticket = {
-  id: string;
-  eventName: string;
-  eventDate: string;
-  seat: string;
-  orderNumber: string;
-  price: number;
-  status: "pending" | "confirmed" | "transferred" | "completed" | "disputed";
-  image: string;
-  role: "buyer" | "seller";
-};
+import { ITicketListed } from "../types";
 
-const ticketCategories = [
-  { title: "Pending Confirmation", status: "pending" },
-  { title: "Confirmed", status: "confirmed" },
-  { title: "Pending Transfer", status: "transferred" },
-  { title: "Completed", status: "completed" },
-  { title: "Disputed", status: "disputed" },
-];
-
-export default function MyTicketsPage() {
-  const { userListings, isLoading } = useMyTicketsData();
-
-  return (
-    <div className="container mx-auto py-6 px-4">
-      <h1 className="text-3xl font-bold mb-6">My Tickets</h1>
-      {isLoading ? (
-        <TicketsSkeleton />
-      ) : (
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Listed for Sale</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {userListings.map(ticket => (
-              <TicketCard
-                ticket={ticket}
-                key={`${ticket.ticketSerialNumberHash}`}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function TicketCard({ ticket }: { ticket: ITicketListed }) {
+export function TicketCard({ ticket }: { ticket: ITicketListed }) {
   const EventContract = useEventContract();
   const PTContract = usePaymentTokenContract();
   return (
@@ -120,7 +72,7 @@ function TicketCard({ ticket }: { ticket: ITicketListed }) {
   );
 }
 
-function TicketsSkeleton() {
+export function TicketsSkeleton() {
   return (
     <div className="space-y-8">
       {[...Array(3)].map((_, i) => (
