@@ -17,10 +17,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ITicketListed } from "../../marketplace/types";
-import useMyTicketsData from "../hooks/useMyTicketsData";
 import useEventContract from "@/abi/Event";
 import usePaymentTokenContract from "@/abi/PaymentToken";
+
+import { ITicketListed } from "../../marketplace/types";
+import useMyTicketsData from "../hooks/useMyTicketsData";
 
 type Ticket = {
   id: string;
