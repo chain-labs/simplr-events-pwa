@@ -42,7 +42,7 @@ const useMarketplaceData = () => {
           //     };
           //   }
           // );
-          const marketTickets: ITicketListed[] = listings.map(item => {
+          const marketTickets: ITicketListed[] = listings.map((item: any) => {
             console.log({ item });
             return {
               event: {
