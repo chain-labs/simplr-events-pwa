@@ -9,9 +9,10 @@ import {
 } from "wagmi";
 import { waitForTransactionReceipt } from "@wagmi/core";
 import { formatUnits } from "viem";
+import { AlertCircle, CheckCircle, XCircle } from "lucide-react";
 import axios from "axios";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import usePaymentTokenContract from "@/abi/PaymentToken";
 import useMarketplaceContract from "@/abi/Marketplace";
@@ -19,7 +20,6 @@ import useEventContract from "@/abi/Event";
 import useEscrowContract from "@/abi/Escrow";
 
 import { TicketMetadata } from ".";
-import { AlertCircle, CheckCircle, XCircle } from "lucide-react";
 
 type UserRole = "buyer" | "seller" | "other";
 

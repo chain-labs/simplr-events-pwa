@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
-import axios from "axios";
-import { useAccount } from "wagmi";
+import React from "react";
 
 import TicketMarketplace from "./TicketMarketplace";
 

@@ -1,17 +1,14 @@
 import { getWalletClient, waitForTransactionReceipt } from "@wagmi/core";
 import axios from "axios";
-import React, { useState } from "react";
 import { useAccount, useConfig, useWriteContract } from "wagmi";
-
-import useEventContract from "@/abi/Event";
-import { envVars } from "@/lib/envVars";
-import useMarketplaceContract from "@/abi/Marketplace";
-import usePaymentTokenContract, { IPaymentContract } from "@/abi/PaymentToken";
-
-import { FormData } from "../components/ListButton";
 import { arbitrum, arbitrumSepolia } from "viem/chains";
 import { parseUnits } from "viem";
+
+import { envVars } from "@/lib/envVars";
+import { IPaymentContract } from "@/abi/PaymentToken";
 import { IContract } from "@/abi/Escrow";
+
+import { FormData } from "../components/ListButton";
 
 type Props = {
   formData: FormData;

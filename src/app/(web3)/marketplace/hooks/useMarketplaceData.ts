@@ -5,7 +5,7 @@ import { useAccount } from "wagmi";
 import { envVars } from "@/lib/envVars";
 
 import { getMarketplaceTicketsListWithUser, getTicketsFromAList } from "../gql";
-import { ITicket, ITicketListed } from "../types";
+import {  ITicketListed } from "../types";
 
 const useMarketplaceData = () => {
   const account = useAccount();

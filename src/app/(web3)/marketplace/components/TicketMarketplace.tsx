@@ -4,11 +4,10 @@ import React from "react";
 
 import useMarketplaceData from "../hooks/useMarketplaceData";
 
-import { OwnedTicketCard } from "./OwnedTicketCard";
 import ListedTicketCard from "./ListedTicketCard";
 
 export default function TicketMarketplace() {
-  const { marketTickets, userTickets } = useMarketplaceData();
+  const { marketTickets } = useMarketplaceData();
 
   return (
     <div className="mt-8">

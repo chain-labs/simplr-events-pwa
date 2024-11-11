@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -162,7 +162,7 @@ const Disclaimer: React.FC<DisclaimerProps> = ({
         Go Back
       </Button>
       <Button onClick={onConfirm} className="bg-green-500 text-white">
-        Yes, I'm sure
+        {`Yes, I'm sure`}
       </Button>
     </div>
   </div>
@@ -298,7 +298,6 @@ const TicketListingFlow: React.FC = () => {
   };
 
   const closeModal = (): void => {
-    setIsOpen(false);
     setStep(1);
     setCurrentStage(0);
     setFormData({
@@ -307,6 +306,12 @@ const TicketListingFlow: React.FC = () => {
       price: "",
     });
   };
+
+  useEffect(() => {
+    if (!isOpen) {
+      closeModal();
+    }
+  }, [isOpen]);
 
   const handleSubmit = (): void => setStep(2);
 
