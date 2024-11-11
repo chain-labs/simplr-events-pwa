@@ -82,7 +82,11 @@ const useListingTicket = ({ formData }: Props) => {
           seat: "General Admission",
           verificationData: "", // bytes data
           ticketEncryptedDataUri: "", // lit protocol's encrypted data
-          ticketMetadata: `https://simplrhq.com/api/metadata/${EventContract.address}/${tokenId}`, // public metadata
+          ticketMetadata: `${
+            envVars.isTestNetwork
+              ? "https://simplrhq.com"
+              : "https://stage-simplrhq-devcon.vercel.app"
+          }/api/metadata/${EventContract.address}/${tokenId}`, // public metadata
         },
       ] as const,
     });
