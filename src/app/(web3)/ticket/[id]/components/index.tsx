@@ -5,6 +5,7 @@ import Image from "next/image";
 import { formatUnits } from "viem";
 import axios from "axios";
 import { Calendar, MapPin, QrCode, Tag, Timer } from "lucide-react";
+import { useAccount } from "wagmi";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { envVars } from "@/lib/envVars";
@@ -15,7 +16,6 @@ import { Badge } from "@/components/ui/badge";
 import { GetEscrowDetails, GetTicketDetailsQuery } from "../gql";
 
 import TicketActions from "./TicketActions";
-import { useAccount } from "wagmi";
 
 interface Props {
   ticketId: string;
