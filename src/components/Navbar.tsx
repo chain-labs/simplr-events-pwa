@@ -21,6 +21,7 @@ import { Input } from "./ui/input";
 export default function Navbar() {
   const account = useAccount();
   const [modal, setModal] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     if (account.address) {
@@ -41,32 +42,30 @@ export default function Navbar() {
   }, [account.address]);
 
   return (
-    <nav className="bg-slate-700 border-b py-4">
+    <nav className="bg-slate-700 border-b py-2 md:px-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-between items-center h-16">
           <div className="flex items-center gap-x-6">
             <Link
               href="/marketplace"
               className="flex-shrink-0 flex items-center"
             >
               <div>
-                <img src="/images/logo.svg" alt="logo" />
+                <img
+                  src="/images/logo.svg"
+                  alt="logo"
+                  className="w-16 sm:w-24"
+                />
               </div>
             </Link>
-            {account.address && (
-              <Link href={"/my-tickets"}>
-                <p className="font-normal text-white cursor-pointer">
-                  My Tickets
-                </p>
-              </Link>
-            )}
-            <Link href={"/marketplace"}>
-              <p className="font-normal text-white cursor-pointer">
-                Marketplace
-              </p>
-            </Link>
           </div>
-          <div className="flex items-center gap-x-4">
+          <button
+            className="sm:hidden text-white"
+            onClick={() => setDrawerOpen(!drawerOpen)}
+          >
+            Menu
+          </button>
+          <div className="hidden sm:flex items-center gap-x-4">
             {account.address && <TicketListingFlow />}
             <ConnectButton />
             <a
@@ -79,6 +78,22 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+      {drawerOpen && (
+        <div className="sm:hidden bg-slate-800 p-4 flex flex-col gap-y-2 absolute top-20 left-0 w-full z-10">
+          <ConnectButton />
+          {account.address && <TicketListingFlow />}
+          {account.address && (
+            <Link href={"/my-tickets"}>
+              <p className="font-normal text-white cursor-pointer">
+                My Tickets
+              </p>
+            </Link>
+          )}
+          <Link href={"/marketplace"}>
+            <p className="font-normal text-white cursor-pointer">Marketplace</p>
+          </Link>
+        </div>
+      )}
       <UserForm isOpen={modal} setIsOpen={setModal} />
     </nav>
   );

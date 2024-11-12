@@ -13,7 +13,7 @@ const nextConfig = {
             {
                 source: '/',
                 destination: '/marketplace',
-                permanent: true,
+                permanent: false,
             },
         ];
     },
