@@ -58,6 +58,20 @@ export default function Navbar() {
                 />
               </div>
             </Link>
+            <div className="hidden md:flex items-center gap-x-4">
+              {account.address && (
+                <Link href={"/my-tickets"}>
+                  <p className="font-normal text-white cursor-pointer">
+                    My Tickets
+                  </p>
+                </Link>
+              )}
+              <Link href={"/marketplace"}>
+                <p className="font-normal text-white cursor-pointer">
+                  Marketplace
+                </p>
+              </Link>
+            </div>
           </div>
           <button
             className="sm:hidden text-white"
@@ -66,8 +80,6 @@ export default function Navbar() {
             Menu
           </button>
           <div className="hidden sm:flex items-center gap-x-4">
-            {account.address && <TicketListingFlow />}
-            <ConnectButton />
             <a
               href={"https://t.me/+oXNaYmx7iwY3NjU1"}
               target="_blank"
@@ -75,6 +87,8 @@ export default function Navbar() {
             >
               <p className="font-normal text-white cursor-pointer">Telegram</p>
             </a>
+            {account.address && <TicketListingFlow />}
+            <ConnectButton />
           </div>
         </div>
       </div>
