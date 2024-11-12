@@ -112,7 +112,14 @@ export default function TicketComponent({ ticketId }: Props) {
   }, [ticketId, refreshTicket, EscrowContract]);
 
   if (!ticket) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="loader mb-4"></div>
+          <p className="text-lg font-medium text-gray-700">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
