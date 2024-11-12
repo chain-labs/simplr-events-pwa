@@ -5,6 +5,7 @@ import Image from "next/image";
 import { formatUnits } from "viem";
 import { Calendar, MapPin, QrCode, Tag, Timer } from "lucide-react";
 import axios from "axios";
+import { useAccount } from "wagmi";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -94,6 +95,8 @@ export default function TicketDisplay({ ticketId }: Props) {
   const PTContract = usePaymentTokenContract();
   const EscrowContract = useEscrowContract();
 
+  const account = useAccount();
+
   const refreshTicket = useCallback(async () => {
     const status = await checkEscrowStatus(ticketId, EscrowContract.address);
     getTicketDetails(ticketId).then(metadata => {
@@ -149,11 +152,14 @@ export default function TicketDisplay({ ticketId }: Props) {
           <CardContent className="p-6">
             <div className="grid grid-cols-2 gap-6 mb-6">
               <InfoItem icon={MapPin} label="Seat No" value={ticket?.seatNo} />
-              <InfoItem
-                icon={QrCode}
-                label="Serial Number"
-                value={ticket?.serialNumber ?? "-"}
-              />
+              {account.address === ticket.seller ||
+              account.address === ticket.buyer ? (
+                <InfoItem
+                  icon={QrCode}
+                  label="Order Number"
+                  value={ticket?.serialNumber ?? "-"}
+                />
+              ) : null}
               <InfoItem
                 icon={Tag}
                 label="Price"

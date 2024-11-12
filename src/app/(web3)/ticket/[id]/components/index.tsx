@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { GetEscrowDetails, GetTicketDetailsQuery } from "../gql";
 
 import TicketActions from "./TicketActions";
+import { useAccount } from "wagmi";
 
 interface Props {
   ticketId: string;
@@ -94,6 +95,8 @@ export default function TicketComponent({ ticketId }: Props) {
   const PTContract = usePaymentTokenContract();
   const EscrowContract = useEscrowContract();
 
+  const account = useAccount();
+
   const refreshTicket = useCallback(async () => {
     const status = await checkEscrowStatus(ticketId, EscrowContract.address);
     getTicketDetails(ticketId).then(metadata => {
@@ -140,11 +143,14 @@ export default function TicketComponent({ ticketId }: Props) {
           <CardContent className="p-6">
             <div className="grid grid-cols-2 gap-6 mb-6">
               <InfoItem icon={MapPin} label="Seat No" value={ticket.seatNo} />
-              <InfoItem
-                icon={QrCode}
-                label="Serial Number"
-                value={ticket.serialNumber}
-              />
+              {account.address === ticket.seller ||
+              account.address === ticket.buyer ? (
+                <InfoItem
+                  icon={QrCode}
+                  label="Order Number"
+                  value={ticket?.serialNumber ?? "-"}
+                />
+              ) : null}
               <InfoItem
                 icon={Tag}
                 label="Price"
