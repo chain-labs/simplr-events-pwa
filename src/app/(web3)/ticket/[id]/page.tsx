@@ -29,8 +29,11 @@ export default async function TicketPage({
 }) {
   const checkTicket = async (ticketId: string) => {
     try {
+      const baseUrl = process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : "http://localhost:3000";
       const response = await fetch(
-        `http://localhost:3000/api/listings?ticketId=${ticketId}`,
+        `${baseUrl}/api/listings?ticketId=${ticketId}`,
         {
           cache: "no-store",
         }
