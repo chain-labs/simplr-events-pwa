@@ -176,11 +176,20 @@ export default function TicketActions({
     if (!userConfirmed) {
       return;
     }
-    const tx = await releaseFunds({
+    const releaseOptions = {
       address: EscrowContract.address,
       abi: EscrowContract.abi,
       functionName: "releaseFunds",
       args: [BigInt(ticket.id.split("-")[2]), EventContract.address],
+    };
+
+    const sim = await client?.estimateGas({
+      ...releaseOptions,
+      account: account.address,
+    });
+    const tx = await releaseFunds({
+      ...releaseOptions,
+      gas: BigInt(Math.max(Number(sim as bigint) + 200000, 1000000)),
     });
 
     const receipt = await waitForTransactionReceipt(config, { hash: tx });
