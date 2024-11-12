@@ -14,7 +14,7 @@ export async function POST(request) {
     const body = (await request.json());
 
     // Validate required fields
-    const requiredFields = ["tokenId", "buyer", "seller"];
+    const requiredFields = ["tokenId", "buyer", "seller", "orderNumber"];
     const missingFields = requiredFields.filter(
       field => !body[field]
     );
@@ -38,6 +38,7 @@ export async function POST(request) {
     const template = getSellerEmailTemplate({
       sellerName: sellerUser.name,
       tokenId: body.tokenId,
+      orderNumber: body.orderNumber,
       buyerEmailId: buyerUser.email,
       sellerEmailId: sellerUser.email,
       devconEmail: "support@devcon.org",

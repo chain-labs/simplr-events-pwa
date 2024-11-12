@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CalendarIcon, MapPinIcon, TicketIcon } from "lucide-react";
 import { formatUnits } from "viem";
+import { twMerge } from "tailwind-merge";
 
 import {
   Card,
@@ -44,7 +45,7 @@ const ticketCategories = [
 ];
 
 export default function MyTicketsPage() {
-  const { userListings, isLoading } = useMyTicketsData();
+  const { userListings, userSold, userBought, isLoading } = useMyTicketsData();
 
   return (
     <div className="container mx-auto py-6 px-4">
@@ -53,14 +54,54 @@ export default function MyTicketsPage() {
         <TicketsSkeleton />
       ) : (
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">Listed for Sale</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {userListings.map(ticket => (
-              <TicketCard
-                ticket={ticket}
-                key={`${ticket.ticketSerialNumberHash}`}
-              />
-            ))}
+          <h2 className="text-2xl font-semibold mb-6 md:mb-8">
+            Listed for Sale
+          </h2>
+          <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {userListings.length > 0 ? (
+              userListings.map(ticket => (
+                <TicketCard
+                  ticket={ticket}
+                  key={`${ticket.ticketSerialNumberHash}`}
+                />
+              ))
+            ) : (
+              <p className="text-center text-gray-500">
+                No tickets listed for sale.
+              </p>
+            )}
+          </div>
+          <h2 className="text-2xl font-semibold mt-10 mb-6 md:mt-12 md:mb-8">
+            Bought Tickets
+          </h2>
+          <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {userBought.length > 0 ? (
+              userBought.map(ticket => (
+                <TicketCard
+                  type="BOUGHT"
+                  ticket={ticket}
+                  key={`${ticket.ticketSerialNumberHash}`}
+                />
+              ))
+            ) : (
+              <p className="text-center text-gray-500">No tickets bought.</p>
+            )}
+          </div>
+          <h2 className="text-2xl font-semibold mt-10 mb-6 md:mt-12 md:mb-8">
+            Sold Tickets
+          </h2>
+          <div className="grid gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {userSold.length > 0 ? (
+              userSold.map(ticket => (
+                <TicketCard
+                  ticket={ticket}
+                  type="SOLD"
+                  key={`${ticket.ticketSerialNumberHash}`}
+                />
+              ))
+            ) : (
+              <p className="text-center text-gray-500">No tickets sold.</p>
+            )}
           </div>
         </div>
       )}
@@ -68,28 +109,60 @@ export default function MyTicketsPage() {
   );
 }
 
-function TicketCard({ ticket }: { ticket: ITicketListed }) {
+function TicketCard({
+  ticket,
+  type,
+}: {
+  ticket: ITicketListed;
+  type?: "SOLD" | "BOUGHT";
+}) {
   const EventContract = useEventContract();
   const PTContract = usePaymentTokenContract();
+
+  const status = useMemo(() => {
+    let text = "Checking...";
+    if (ticket && type) {
+      const isResolved = ticket.isResolved;
+      const isDisputed = ticket.isDisputed;
+
+      if (type === "SOLD") {
+        if (isResolved) {
+          text = "Complete";
+        } else if (isDisputed) {
+          text = "Disputed";
+        } else text = "Pending";
+      } else {
+        if (isResolved) {
+          text = "Complete";
+        } else if (isDisputed) {
+          text = "Disputed";
+        } else text = "Action Required";
+      }
+    }
+    return text;
+  }, [ticket, type]);
+
   return (
     <Card>
       <CardHeader>
         <Image
-          src={ticket.event.image}
-          alt={ticket.event.name}
+          src={ticket?.event?.image ?? "https://placehold.co/600x400"}
+          alt={"devcon image"}
           width={200}
           height={100}
           className="w-full object-cover rounded-t-lg"
         />
-        <CardTitle>{ticket.event.name}</CardTitle>
-        <CardDescription>#{ticket.tokenId}</CardDescription>
+        <CardTitle>{ticket?.event?.name}</CardTitle>
+        <CardDescription>#{ticket?.tokenId}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid gap-2">
           <div className="flex items-center">
             <CalendarIcon className="mr-2 h-4 w-4" />
             <span>
-              {new Date(Number(ticket.event.date) * 1000).toLocaleString()}
+              {ticket?.event?.date
+                ? new Date(Number(ticket.event.date) * 1000).toLocaleString()
+                : "-"}
             </span>
           </div>
           <div className="flex items-center">
@@ -104,12 +177,17 @@ function TicketCard({ ticket }: { ticket: ITicketListed }) {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between items-center">
-        {/* <Badge
-          variant={ticket.status === "completed" ? "default" : "secondary"}
-        >
-          {ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
-        </Badge> */}
+      <CardFooter
+        className={twMerge(
+          "flex items-center",
+          type ? "justify-between" : "justify-end"
+        )}
+      >
+        {type && (
+          <Badge variant={status === "Complete" ? "default" : "secondary"}>
+            {status}
+          </Badge>
+        )}
         <Link
           href={`/ticket/ticket-${EventContract.address}-${ticket.tokenId}`}
           passHref

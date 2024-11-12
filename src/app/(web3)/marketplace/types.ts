@@ -5,6 +5,8 @@ export type ITicket = {
   ticketSerialNumberHash: string;
   tokenId: string;
   listed: boolean;
+  isResolved?: boolean;
+  isDisputed?: boolean;
 };
 
 export type ITicketListed = ITicket & {

@@ -1,6 +1,7 @@
 export interface SellerEmailData {
   sellerName: string;
   tokenId: string;
+  orderNumber: string;
   buyerEmailId: string;
   sellerEmailId: string;
   devconEmail: string;
@@ -11,6 +12,7 @@ export interface SellerEmailData {
 export const getSellerEmailTemplate = ({
   sellerName,
   tokenId,
+  orderNumber,
   buyerEmailId,
   sellerEmailId,
   devconEmail,
@@ -96,7 +98,7 @@ export const getSellerEmailTemplate = ({
               
               Ticket owner email ID: ${sellerEmailId}<br>
               New Ticket Owner email ID: ${buyerEmailId}<br>
-              Order number: <strong>*Your Ticket Order Number*</strong><br><br>
+              Order number: <strong>*${orderNumber}*</strong><br><br>
               
               Thanks for understanding the situation.
           </div>
@@ -146,7 +148,7 @@ export const getSellerEmailTemplate = ({
   
   Ticket owner email ID: ${sellerEmailId}
   New Ticket Owner email ID: ${buyerEmailId}
-  Order number: *Your Ticket Order Number*
+  Order number: *${orderNumber}*
   
   Thanks for understanding the situation.
   

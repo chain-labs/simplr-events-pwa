@@ -19,3 +19,61 @@ export const GetUserListings = `query MyQuery($sellerId: String!) {
     }
   }
 }`;
+
+export const GetUserBought = `query GetUserBought($userId: String!) {
+  escrows(where: {buyerId: $userId}) {
+    items {
+      buyerId
+      sellerId
+      event {
+        name
+        eventDate
+      }
+      ticket {
+        id
+        seat
+        ticketSerialNumberHash
+        tokenMetadata
+        tokenURI
+        listings {
+          items {
+            price
+            deadline
+          }
+        }
+      }
+      isDisputed
+      isResolved
+      fundsLocked
+    }
+  }
+}`;
+
+export const GetUserSold = `query GetUserSold($userId: String!) {
+  escrows(where: {sellerId: $userId}) {
+    items {
+      buyerId
+      sellerId
+      event {
+        name
+        eventDate
+      }
+      ticket {
+        id
+        seat
+        ticketSerialNumberHash
+        tokenMetadata
+        tokenURI
+        listings {
+          items {
+            price
+            deadline
+          }
+        }
+      }
+      isDisputed
+      isResolved
+      fundsLocked
+    }
+  }
+}`;

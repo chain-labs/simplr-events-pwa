@@ -152,6 +152,7 @@ export default function TicketActions({
         tokenId: ticket.id.split("-")[2],
         seller: ticket.seller,
         buyer: userWallet,
+        orderNumber: ticket.serialNumber,
       });
     } catch (err) {
       console.error(err);
