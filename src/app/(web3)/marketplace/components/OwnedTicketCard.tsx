@@ -91,8 +91,6 @@ export function OwnedTicketCard({ ticket }: OwnedTicketCardProps) {
           },
         });
 
-        console.log({ signature });
-
         // transaction here
         const tx = await listTicket?.({
           address: MarketplaceContract.address,
