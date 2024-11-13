@@ -40,10 +40,7 @@ const getLatestTokenId = async (event: string) => {
   // const response = await axios.post(envVars.subgraphUrl, { query, variables });
 
   const response = await axios.get(`/api/metadata?event=${event}`);
-  console.log({ response });
-
   const tokenId = response.data.count ?? 0;
-  console.log("Fetched: ", { tokenId });
   return `${tokenId + 1}`;
 };
 
@@ -115,8 +112,6 @@ const useListingTicket = ({ formData }: Props) => {
       ...options,
       account: account.address,
     });
-
-    console.log({ mintGas: sim });
     const finalGas = (sim as bigint) + (sim as bigint) / BigInt(2);
     const mintTx = await mintWrite({
       ...options,
@@ -131,8 +126,6 @@ const useListingTicket = ({ formData }: Props) => {
     EventContract: IContract,
     MarketplaceContract: IContract
   ) => {
-    console.log({ formData });
-
     const options = {
       address: EventContract.address,
       abi: EventContract.abi,
