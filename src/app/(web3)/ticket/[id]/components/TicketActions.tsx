@@ -110,7 +110,7 @@ export default function TicketActions({
           ...allowOptions,
           account: account.address,
         });
-        const allowanceTx = await setAllowance({ ...allowOptions, gas: sim });
+        const allowanceTx = await setAllowance({ ...allowOptions });
         await waitForTransactionReceipt(config, { hash: allowanceTx });
       }
       const tokenId = ticket.id.split("-")[2];
