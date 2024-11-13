@@ -7,7 +7,7 @@ import useMarketplaceData from "../hooks/useMarketplaceData";
 import { TicketCard, TicketsSkeleton } from "./TicketCard";
 
 export default function TicketMarketplace() {
-  const { marketTickets, isLoading } = useMarketplaceData();
+  const { marketTickets, soldTickets, isLoading } = useMarketplaceData();
 
   return (
     <div className="mt-8">
@@ -15,13 +15,25 @@ export default function TicketMarketplace() {
       {isLoading ? (
         <TicketsSkeleton />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {marketTickets.map(ticket => (
-            <TicketCard
-              key={`${ticket.tokenId}-${ticket.deadline}`}
-              ticket={ticket}
-            />
-          ))}
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {marketTickets.map(ticket => (
+              <TicketCard
+                key={`${ticket.tokenId}-${ticket.deadline}`}
+                ticket={ticket}
+              />
+            ))}
+          </div>
+          <h2 className="text-4xl font-bold mt-8 mb-4">Sold Tickets</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {soldTickets.map(ticket => (
+              <TicketCard
+                sold
+                key={`${ticket.tokenId}-${ticket.deadline}`}
+                ticket={ticket}
+              />
+            ))}
+          </div>
         </div>
       )}
     </div>

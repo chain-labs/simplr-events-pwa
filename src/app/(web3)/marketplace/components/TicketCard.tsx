@@ -19,7 +19,13 @@ import usePaymentTokenContract from "@/abi/PaymentToken";
 
 import { ITicketListed } from "../types";
 
-export function TicketCard({ ticket }: { ticket: ITicketListed }) {
+export function TicketCard({
+  ticket,
+  sold,
+}: {
+  ticket: ITicketListed;
+  sold?: boolean;
+}) {
   const EventContract = useEventContract();
   const PTContract = usePaymentTokenContract();
   return (
@@ -61,12 +67,14 @@ export function TicketCard({ ticket }: { ticket: ITicketListed }) {
         >
           {ticket.status.charAt(0).toUpperCase() + ticket.status.slice(1)}
         </Badge> */}
-        <Link
-          href={`/ticket/ticket-${EventContract.address}-${ticket.tokenId}`}
-          passHref
-        >
-          <Button>View Details</Button>
-        </Link>
+        {!sold && (
+          <Link
+            href={`/ticket/ticket-${EventContract.address}-${ticket.tokenId}`}
+            passHref
+          >
+            <Button>View Details</Button>
+          </Link>
+        )}
       </CardFooter>
     </Card>
   );

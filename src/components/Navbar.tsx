@@ -135,7 +135,6 @@ const UserForm = ({
           address: account.address,
           name,
         });
-        console.log({ postResponse: postResponse.data });
         setIsOpen(false);
         console.log("Form submitted:", { name, email });
       } catch (postError) {
