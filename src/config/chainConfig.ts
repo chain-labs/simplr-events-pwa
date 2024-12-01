@@ -1,5 +1,6 @@
 import { CHAIN_NAMESPACES, CustomChainConfig } from "@web3auth/base";
-import { arbitrum } from "viem/chains";
+
+import { envVars } from "@/lib/envVars";
 
 export const chain: {
   [key: string]: CustomChainConfig;
@@ -7,7 +8,7 @@ export const chain: {
   arbitrum: {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
     chainId: "0xA4B1", // hex of 42161
-    rpcTarget: "https://rpc.ankr.com/arbitrum",
+    rpcTarget: `https://arb-mainnet.g.alchemy.com/v2/${envVars.alchemyApiKey}`,
     // Avoid using public rpcTarget in production.
     // Use services like Infura, Quicknode etc
     displayName: "Arbitrum Mainnet",
@@ -19,7 +20,7 @@ export const chain: {
   arbitrumSepolia: {
     chainNamespace: CHAIN_NAMESPACES.EIP155,
     chainId: "0x66EEE", // hex of 421614
-    rpcTarget: "https://api.zan.top/arb-sepolia",
+    rpcTarget: `https://arb-sepolia.g.alchemy.com/v2/${envVars.alchemyApiKey}`,
     // Avoid using public rpcTarget in production.
     // Use services like Infura, Quicknode etc
     displayName: "Arbitrum Sepolia",

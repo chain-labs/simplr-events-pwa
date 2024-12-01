@@ -1,7 +1,7 @@
 import React from "react";
 
 import TestingComponent from "./components";
-import AuthProvider from "./Auth";
+import AuthProvider from "../../../components/Auth";
 
 const TestingPage = () => {
   return (

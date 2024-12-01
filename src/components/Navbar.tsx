@@ -1,11 +1,14 @@
 import Link from "next/link";
-import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useWeb3Auth } from "@web3auth/modal-react-hooks";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import TicketListingFlow from "@/app/(web3)/marketplace/components/ListButton";
+import useEtherspot from "@/services/hooks/useEtherspot";
+import useAccount from "@/services/hooks/useAccount";
 
 import {
   Dialog,
@@ -19,17 +22,17 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 
 export default function Navbar() {
-  const account = useAccount();
   const [modal, setModal] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const { connect } = useWeb3Auth();
+  const { address, name, email, handleLogout } = useAccount();
+
   useEffect(() => {
-    if (account.address) {
+    if (address) {
       const checkAndPostUser = async () => {
         try {
-          const response = await axios.get(
-            `/api/users?address=${account.address}`
-          );
+          const response = await axios.get(`/api/users?address=${address}`);
           console.log({ response: response.data });
           setModal(false);
         } catch (e) {
@@ -39,7 +42,9 @@ export default function Navbar() {
       };
       checkAndPostUser();
     }
-  }, [account.address]);
+  }, [address]);
+
+  const etherspot = useEtherspot();
 
   return (
     <nav className="bg-slate-700 border-b py-2 md:px-4">
@@ -51,15 +56,17 @@ export default function Navbar() {
               className="flex-shrink-0 flex items-center"
             >
               <div>
-                <img
+                <Image
                   src="/images/logo.svg"
                   alt="logo"
                   className="w-16 sm:w-24"
+                  width={100}
+                  height={100}
                 />
               </div>
             </Link>
             <div className="hidden md:flex items-center gap-x-4">
-              {account.address && (
+              {address && (
                 <Link href={"/my-tickets"}>
                   <p className="font-normal text-white cursor-pointer">
                     My Tickets
@@ -87,16 +94,36 @@ export default function Navbar() {
             >
               <p className="font-normal text-white cursor-pointer">Telegram</p>
             </a>
-            {account.address && <TicketListingFlow />}
-            <ConnectButton />
+            {address && <TicketListingFlow />}
+            {!address ? (
+              <div
+                className="flex flex-row rounded-full px-6 py-3 text-white justify-center align-center cursor-pointer"
+                style={{ backgroundColor: "#0364ff" }}
+                onClick={connect}
+              >
+                Login
+              </div>
+            ) : (
+              <div>
+                <p className="font-normal text-white cursor-pointer">
+                  Hello <span className="font-bold">{name}</span>
+                </p>
+                <div
+                  onClick={handleLogout}
+                  className="cursor-pointer border border-white bg-blue-800 rounded-full px-2 text-white text-sm py-2 text-center"
+                >
+                  Logout
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
       {drawerOpen && (
         <div className="sm:hidden bg-slate-800 p-4 flex flex-col gap-y-2 absolute top-20 left-0 w-full z-10">
           <ConnectButton />
-          {account.address && <TicketListingFlow />}
-          {account.address && (
+          {address && <TicketListingFlow />}
+          {address && (
             <Link href={"/my-tickets"}>
               <p className="font-normal text-white cursor-pointer">
                 My Tickets
@@ -108,7 +135,7 @@ export default function Navbar() {
           </Link>
         </div>
       )}
-      <UserForm isOpen={modal} setIsOpen={setModal} />
+      <UserForm isOpen={modal} setIsOpen={setModal} address={address} />
     </nav>
   );
 }
@@ -116,14 +143,25 @@ export default function Navbar() {
 const UserForm = ({
   isOpen,
   setIsOpen,
+  address,
 }: {
   isOpen: boolean;
+  address: string | null;
   setIsOpen: (isOpen: boolean) => void;
 }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  const account = useAccount();
+  const { userInfo } = useWeb3Auth();
+
+  useEffect(() => {
+    if (userInfo?.email) {
+      setEmail(userInfo.email);
+    }
+    if (userInfo?.name) {
+      setName(userInfo.name);
+    }
+  }, [userInfo]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,7 +170,7 @@ const UserForm = ({
       try {
         const postResponse = await axios.post("/api/users", {
           email,
-          address: account.address,
+          address: address,
           name,
         });
         setIsOpen(false);
@@ -157,7 +195,7 @@ const UserForm = ({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Enter Your Information</DialogTitle>
+          <DialogTitle>Register to Simplr Events!</DialogTitle>
           <DialogDescription>
             {
               "Please provide your name and email address. We'll share necessary details on this email."
@@ -193,7 +231,7 @@ const UserForm = ({
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Get Started</Button>
           </DialogFooter>
         </form>
       </DialogContent>

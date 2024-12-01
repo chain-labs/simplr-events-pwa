@@ -51,6 +51,8 @@ const walletServicesPlugin = new WalletServicesPlugin({
     whiteLabel: {
       showWidgetButton: true,
       buttonPosition: BUTTON_POSITION.BOTTOM_RIGHT,
+      logoDark: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
+      logoLight: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
     },
     confirmationStrategy: CONFIRMATION_STRATEGY.MODAL,
   },

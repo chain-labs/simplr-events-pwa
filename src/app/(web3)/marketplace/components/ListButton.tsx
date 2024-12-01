@@ -193,6 +193,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   useEffect(() => {
     const process = async () => {
       try {
+        // TODO: integrate etherspot here
         const tokenId = await handleMint(EventContract);
         incrementProgress(1);
         await handleApprove(EventContract, MarketplaceContract);

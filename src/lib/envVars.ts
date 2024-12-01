@@ -7,6 +7,10 @@ const checkEnvVar = (name: string, value: string | undefined): string => {
 };
 
 export const envVars = {
+  alchemyApiKey: checkEnvVar(
+    "NEXT_PUBLIC_ALCHEMY_API_KEY",
+    process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
+  ),
   googleMeasurementId: checkEnvVar(
     "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID",
     process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID

@@ -7,7 +7,7 @@ import {
 } from "@web3auth/modal-react-hooks";
 import { WalletServicesProvider } from "@web3auth/wallet-services-plugin-react-hooks";
 
-import web3AuthContextConfig from "./services/web3authContext";
+import web3AuthContextConfig from "../services/web3authContext";
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return (

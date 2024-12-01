@@ -16,6 +16,7 @@ import { parseUnits } from "viem";
 import { envVars } from "@/lib/envVars";
 import { IPaymentContract } from "@/abi/PaymentToken";
 import { IContract } from "@/abi/Escrow";
+import useEtherspot from "@/services/hooks/useEtherspot";
 
 import { FormData } from "../components/ListButton";
 
@@ -51,6 +52,8 @@ const useListingTicket = ({ formData }: Props) => {
   const { writeContractAsync: mintWrite } = useWriteContract();
   const config = useConfig();
   const client = usePublicClient();
+
+  const etherspot = useEtherspot();
 
   const handleMint = async (EventContract: IContract) => {
     // upload metadata and get uri

@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Navbar from "@/components/Navbar";
 import { envVars } from "@/lib/envVars";
+import AuthProvider from "@/components/Auth";
 
 const config = getDefaultConfig({
   appName: "Web3 Ticket Marketplace",
@@ -39,8 +40,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
           <RainbowKitProvider>
-            <Navbar />
-            {children}
+            <AuthProvider>
+              <Navbar />
+              {children}
+            </AuthProvider>
           </RainbowKitProvider>
         </QueryClientProvider>
       </WagmiProvider>

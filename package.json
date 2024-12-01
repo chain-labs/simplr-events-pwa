@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@etherspot/prime-sdk": "^1.8.2",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
@@ -27,12 +28,14 @@
     "eciesjs": "^0.3.16",
     "empty-module": "^0.0.2",
     "framer-motion": "^11.11.9",
+    "graphql": "^16.9.0",
     "lucide-react": "^0.456.0",
     "mongodb": "^6.10.0",
     "next": "^15.0.2",
     "nodemailer": "^6.9.16",
     "react": "^18",
     "react-dom": "^18",
+    "subscriptions-transport-ws": "^0.11.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "viem": "^2.21.53",
