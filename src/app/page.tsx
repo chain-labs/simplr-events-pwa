@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import LandingAComponent from "./landing/component";
 import { DM_Sans } from "next/font/google";
+import Header from "../components/Header";
 
 export const metadata: Metadata = {
   title: "Simplr Events - Coldplay",
@@ -18,6 +19,7 @@ export default function Home() {
       className={`${dmSans.className} bg-cover`}
       style={{ backgroundImage: "url('/images/body-gradient.png')" }}
     >
+      <Header />
       <LandingAComponent />
     </body>
   );
