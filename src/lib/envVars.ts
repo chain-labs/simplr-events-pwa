@@ -36,4 +36,8 @@ export const envVars = {
     "NEXT_PUBLIC_SUBGRAPH_URL",
     process.env.NEXT_PUBLIC_SUBGRAPH_URL
   ),
+  privyAppId: checkEnvVar(
+    "NEXT_PUBLIC_PRIVY_APP_ID",
+    process.env.NEXT_PUBLIC_PRIVY_APP_ID
+  ),
 };

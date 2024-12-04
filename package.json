@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@etherspot/prime-sdk": "^1.8.2",
+    "@etherspot/modular-sdk": "^3.0.1",
+    "@etherspot/prime-sdk": "^1.9.0",
+    "@privy-io/react-auth": "^1.95.2",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
@@ -27,6 +29,7 @@
     "clsx": "^2.1.1",
     "eciesjs": "^0.3.16",
     "empty-module": "^0.0.2",
+    "ethers": "5.7.0",
     "framer-motion": "^11.11.9",
     "graphql": "^16.9.0",
     "lucide-react": "^0.456.0",

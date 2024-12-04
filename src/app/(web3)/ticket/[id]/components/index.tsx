@@ -128,7 +128,7 @@ export default function TicketComponent({ ticketId }: Props) {
         <Card className="overflow-hidden bg-white/80 backdrop-blur-sm shadow-xl">
           <div className="relative h-64 sm:h-80">
             <Image
-              src={ticket.eventImage}
+              src={ticket.eventImage ?? "https://placehold.co/600x400"}
               alt={ticket.eventName}
               layout="fill"
               objectFit="cover"

@@ -3,6 +3,8 @@ const nextConfig = {
     webpack: (config) => {
         config.resolve.fallback = { fs: false, net: false, tls: false };
         config.externals.push("pino-pretty", "encoding");
+        config.externals['@solana/web3.js'] = 'commonjs @solana/web3.js';
+
         return config;
     },
     images: {

@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useWeb3Auth } from "@web3auth/modal-react-hooks";
-import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 
 import { Button } from "@/components/ui/button";
 import TicketListingFlow from "@/app/(web3)/marketplace/components/ListButton";
 import useEtherspot from "@/services/hooks/useEtherspot";
-import useAccount from "@/services/hooks/useAccount";
+// import useEtherspot from "@/services/hooks/useEtherspot";
+// import useAccount from "@/services/hooks/useAccount";
 
 import {
   Dialog,
@@ -25,11 +25,14 @@ export default function Navbar() {
   const [modal, setModal] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const { connect } = useWeb3Auth();
-  const { address, name, email, handleLogout } = useAccount();
+  // const { connect } = useWeb3Auth();
+  // const { address, name, email, handleLogout } = useAccount();
+  const { login, authenticated, user, logout } = usePrivy();
+  const { wallets } = useWallets();
 
   useEffect(() => {
-    if (address) {
+    const address = wallets[0]?.address ?? "";
+    if (authenticated && address) {
       const checkAndPostUser = async () => {
         try {
           const response = await axios.get(`/api/users?address=${address}`);
@@ -42,9 +45,9 @@ export default function Navbar() {
       };
       checkAndPostUser();
     }
-  }, [address]);
+  }, [authenticated, wallets]);
 
-  const etherspot = useEtherspot();
+  // const etherspot = useEtherspot();
 
   return (
     <nav className="bg-slate-700 border-b py-2 md:px-4">
@@ -66,7 +69,7 @@ export default function Navbar() {
               </div>
             </Link>
             <div className="hidden md:flex items-center gap-x-4">
-              {address && (
+              {authenticated && (
                 <Link href={"/my-tickets"}>
                   <p className="font-normal text-white cursor-pointer">
                     My Tickets
@@ -94,22 +97,22 @@ export default function Navbar() {
             >
               <p className="font-normal text-white cursor-pointer">Telegram</p>
             </a>
-            {address && <TicketListingFlow />}
-            {!address ? (
+            {authenticated && <TicketListingFlow />}
+            {!authenticated ? (
               <div
                 className="flex flex-row rounded-full px-6 py-3 text-white justify-center align-center cursor-pointer"
                 style={{ backgroundColor: "#0364ff" }}
-                onClick={connect}
+                onClick={login}
               >
                 Login
               </div>
             ) : (
               <div>
                 <p className="font-normal text-white cursor-pointer">
-                  Hello <span className="font-bold">{name}</span>
+                  Hello <span className="font-bold">{user?.google?.name}</span>
                 </p>
                 <div
-                  onClick={handleLogout}
+                  onClick={logout}
                   className="cursor-pointer border border-white bg-blue-800 rounded-full px-2 text-white text-sm py-2 text-center"
                 >
                   Logout
@@ -121,9 +124,8 @@ export default function Navbar() {
       </div>
       {drawerOpen && (
         <div className="sm:hidden bg-slate-800 p-4 flex flex-col gap-y-2 absolute top-20 left-0 w-full z-10">
-          <ConnectButton />
-          {address && <TicketListingFlow />}
-          {address && (
+          {authenticated && <TicketListingFlow />}
+          {authenticated && (
             <Link href={"/my-tickets"}>
               <p className="font-normal text-white cursor-pointer">
                 My Tickets
@@ -135,7 +137,11 @@ export default function Navbar() {
           </Link>
         </div>
       )}
-      <UserForm isOpen={modal} setIsOpen={setModal} address={address} />
+      <UserForm
+        isOpen={modal}
+        setIsOpen={setModal}
+        address={authenticated ? wallets[0]?.address ?? "" : ""}
+      />
     </nav>
   );
 }
@@ -152,16 +158,25 @@ const UserForm = ({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
-  const { userInfo } = useWeb3Auth();
+  const { user } = usePrivy();
 
   useEffect(() => {
-    if (userInfo?.email) {
-      setEmail(userInfo.email);
+    if (user?.google) {
+      setName(user.google.name ?? "");
+      setEmail(user.google.email);
+    } else if (user?.email) {
+      setEmail(user.email.address);
     }
-    if (userInfo?.name) {
-      setName(userInfo.name);
-    }
-  }, [userInfo]);
+  }, [user]);
+
+  // useEffect(() => {
+  //   if (userInfo?.email) {
+  //     setEmail(userInfo.email);
+  //   }
+  //   if (userInfo?.name) {
+  //     setName(userInfo.name);
+  //   }
+  // }, [userInfo]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -17,6 +17,7 @@ import { envVars } from "@/lib/envVars";
 import { IPaymentContract } from "@/abi/PaymentToken";
 import { IContract } from "@/abi/Escrow";
 import useEtherspot from "@/services/hooks/useEtherspot";
+import { useEtherspotContext } from "@/components/Auth";
 
 import { FormData } from "../components/ListButton";
 
@@ -53,7 +54,7 @@ const useListingTicket = ({ formData }: Props) => {
   const config = useConfig();
   const client = usePublicClient();
 
-  const etherspot = useEtherspot();
+  const { executeSponsoredTransaction, etherspot } = useEtherspotContext();
 
   const handleMint = async (EventContract: IContract) => {
     // upload metadata and get uri
@@ -108,20 +109,27 @@ const useListingTicket = ({ formData }: Props) => {
               : "https://stage-simplrhq-devcon.vercel.app"
           }/api/metadata/${EventContract.address}/${tokenId}`, // public metadata
         },
-      ] as const,
+      ],
     };
 
-    const sim = await client?.estimateContractGas({
-      ...options,
-      account: account.address,
-    });
-    const finalGas = (sim as bigint) + (sim as bigint) / BigInt(2);
-    const mintTx = await mintWrite({
-      ...options,
-      gas: finalGas,
-    });
-    const receipt = await waitForTransactionReceipt(config, { hash: mintTx });
-    console.log({ receipt });
+    // const sim = await client?.estimateContractGas({
+    //   ...options,
+    //   account: account.address,
+    // });
+    // const finalGas = (sim as bigint) + (sim as bigint) / BigInt(2);
+    // const mintTx = await mintWrite({
+    //   ...options,
+    //   gas: finalGas,
+    // });
+    // const receipt = await waitForTransactionReceipt(config, { hash: mintTx });
+    // console.log({ receipt });
+    const { success, receipt } = await executeSponsoredTransaction(
+      options.address,
+      options.abi,
+      options.functionName,
+      options.args
+    );
+    console.log(`${options.functionName}->Success `, success);
     return tokenId;
   };
 
@@ -136,18 +144,26 @@ const useListingTicket = ({ formData }: Props) => {
       args: [MarketplaceContract.address, true],
     };
 
-    const sim = await client?.estimateContractGas({
-      ...options,
-      account: account.address,
-    });
-    console.log({ approveGas: (sim as bigint) + BigInt(150000) });
+    // const sim = await client?.estimateContractGas({
+    //   ...options,
+    //   account: account.address,
+    // });
+    // console.log({ approveGas: (sim as bigint) + BigInt(150000) });
 
-    const approveTx = await approveTransfer({ ...options, gas: sim });
-    const receipt = await waitForTransactionReceipt(config, {
-      hash: approveTx,
-    });
+    // const approveTx = await approveTransfer({ ...options, gas: sim });
+    // const receipt = await waitForTransactionReceipt(config, {
+    //   hash: approveTx,
+    // });
 
-    console.log("Approval receipt:", receipt);
+    // console.log("Approval receipt:", receipt);
+    const { success, receipt } = await executeSponsoredTransaction(
+      options.address,
+      options.abi,
+      options.functionName,
+      options.args
+    );
+
+    return { success };
   };
 
   const handleSignature = async (
@@ -162,10 +178,10 @@ const useListingTicket = ({ formData }: Props) => {
 
     const domain = {
       // sampled from Marketplace.sol:~line 60
-      name: "SimplrMarketplace",
-      version: "1.0.0",
-      chainId: envVars.isTestNetwork ? arbitrumSepolia.id : arbitrum.id,
-      verifyingContract: MarketplaceContract.address,
+      name: "SimplrMarketplace", // string
+      version: "1.0.0", // string
+      chainId: envVars.isTestNetwork ? arbitrumSepolia.id : arbitrum.id, // number
+      verifyingContract: MarketplaceContract.address, // address
     } as const;
 
     const types = {
@@ -180,23 +196,46 @@ const useListingTicket = ({ formData }: Props) => {
       ],
     } as const;
 
-    const signature = await client?.signTypedData({
-      account: account.address ?? "0x",
-      domain,
-      types,
-      primaryType: "Listing",
-      message: {
-        eventContract: EventContract.address,
-        tokenId: BigInt(tokenId),
-        price: parseUnits(formData.price, PTContract.decimals),
-        seller: account.address ?? "0x",
-        deadline: BigInt(DEADLINE),
-      },
-    });
+    // const signature = await client?.signTypedData({
+    //   account: account.address ?? "0x",
+    //   domain,
+    //   types,
+    //   primaryType: "Listing",
+    //   message: {
+    //     eventContract: EventContract.address,
+    //     tokenId: BigInt(tokenId),
+    //     price: parseUnits(formData.price, PTContract.decimals),
+    //     seller: account.address ?? "0x",
+    //     deadline: BigInt(DEADLINE),
+    //   },
+    // });
+    // const message = {
+    //   eventContract: EventContract.address,
+    //   tokenId: BigInt(tokenId),
+    //   price: parseUnits(formData.price, PTContract.decimals),
+    //   seller: account.address ?? "0x",
+    //   deadline: BigInt(DEADLINE),
+    // };
 
-    console.log({ signature });
+    // const signature = await etherspot?.signTypedData(
+    //   types.Listing as TypedDataField[],
+    //   {
+    //     eventContract: EventContract.address,
+    //     tokenId: BigInt(tokenId),
+    //     price: parseUnits(formData.price, PTContract.decimals),
+    //     seller: account.address ?? "0x",
+    //     deadline: BigInt(DEADLINE),
+    //   }
+    // );
 
-    return signature;
+    // await etherspot?.signTypedData(types.Listing, message);
+    // const dataFields: TypedDataField = {
+
+    // }
+
+    // console.log({ signature });
+
+    return "signature";
   };
 
   const handleList = async (
@@ -222,23 +261,30 @@ const useListingTicket = ({ formData }: Props) => {
         ],
       };
 
-      const sim = await client?.estimateContractGas({
-        ...options,
-        account: account.address,
-      });
+      // const sim = await client?.estimateContractGas({
+      //   ...options,
+      //   account: account.address,
+      // });
 
-      console.log({ listGas: sim });
+      // console.log({ listGas: sim });
 
-      const tx = await listTicket?.({
-        ...options,
-        gas: (sim as bigint) + BigInt(100000),
-      });
+      // const tx = await listTicket?.({
+      //   ...options,
+      //   gas: (sim as bigint) + BigInt(100000),
+      // });
 
-      const transactionReceipt = await waitForTransactionReceipt(config, {
-        hash: tx,
-      });
+      // const transactionReceipt = await waitForTransactionReceipt(config, {
+      //   hash: tx,
+      // });
 
-      if (transactionReceipt) {
+      const { success, receipt } = await executeSponsoredTransaction(
+        options.address,
+        options.abi,
+        options.functionName,
+        options.args
+      );
+
+      if (success && receipt) {
         const response = await axios.post("/api/listings", {
           sellerAddress: account.address,
           ticketId: `ticket-${EventContract.address}-${tokenId}`,

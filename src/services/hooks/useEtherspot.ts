@@ -1,61 +1,119 @@
-import {
-  EtherspotBundler,
-  Factory,
-  PrimeSdk,
-  Web3WalletProvider,
-} from "@etherspot/prime-sdk";
-import { useWeb3Auth } from "@web3auth/modal-react-hooks";
-import React, { useEffect } from "react";
+import { arbitrum, arbitrumSepolia, sepolia } from "viem/chains";
+import { PrimeSdk, Web3WalletProvider } from "@etherspot/prime-sdk";
+import React, { useCallback, useEffect } from "react";
+import { useWallets } from "@privy-io/react-auth";
+import { ModularSdk } from "@etherspot/modular-sdk";
+import { encodeFunctionData } from "viem";
 
 import { envVars } from "@/lib/envVars";
 
-import useAccount from "./useAccount";
+const CHAIN_ID = envVars.isTestNetwork ? arbitrumSepolia.id : arbitrum.id;
 
 const useEtherspot = () => {
   const [etherspot, setEtherspot] = React.useState<PrimeSdk | null>(null);
-  const { web3Auth } = useWeb3Auth();
-  const { address } = useAccount();
+
+  const { wallets, ready } = useWallets();
 
   useEffect(() => {
     const getEtherspot = async () => {
-      if (web3Auth?.provider) {
-        const mappedProvider = new Web3WalletProvider(web3Auth.provider);
+      if (wallets[0]) {
+        const provider = await wallets[0].getEthersProvider();
+
+        const web3Provider = {
+          send: (
+            payload: any,
+            callback: (error: any, response?: any) => void
+          ) => {
+            provider
+              .send(payload.method, payload.params)
+              .then(result => callback(null, { result }))
+              .catch(error => callback(error));
+          },
+        };
+        const mappedProvider = new Web3WalletProvider(web3Provider);
         await mappedProvider.refresh();
-
-        // Instantiate Etherspot Prime SDK with wrapped web3auth provider
-        // const etherspotPrimeSdk = new PrimeSdk(mappedProvider, {
-        //   chainId: envVars.isTestNetwork ? 421614 : 42161,
-        //   accountAddress: address ?? "",
-        //   bundlerProvider: {
-        //     url: envVars.isTestNetwork
-        //       ? `https://testnet-rpc.etherspot.io/v1/421614?api-key=${envVars.etherspotApiKey}`
-        //       : `https://rpc.etherspot.io/v1/42161?api-key=${envVars.etherspotApiKey}`,
-        //   },
-        //   entryPointAddress: "0x0000000071727De22E5E9d8BAf0edAc6f37da032",
-        //   walletFactoryAddress: Factory.ETHERSPOT,
-        // });
-
         const primeSdk = new PrimeSdk(mappedProvider, {
-          chainId: 421614,
-          
-          bundlerProvider: new EtherspotBundler(
-            421614,
-            envVars.etherspotApiKey
-          ),
+          chainId: CHAIN_ID,
+          bundlerProvider: {
+            url: `https://testnet-rpc.etherspot.io/v1/${CHAIN_ID}?api-key=${envVars.etherspotApiKey}`,
+          },
         });
 
-        console.log("address: ", primeSdk.state.wallet);
         const account = await primeSdk.getCounterFactualAddress();
-        console.log({ account });
+        console.log("account", account);
 
         setEtherspot(primeSdk);
       }
     };
+    if (ready) getEtherspot();
+    console.log({ see: wallets });
+  }, [wallets, ready]);
 
-    getEtherspot();
-  }, [web3Auth?.provider, address]);
+  const executeSponsoredTransaction = useCallback(
+    async (
+      contractAddress: string,
+      abi: any,
+      functionName: string,
+      args: any[]
+    ) => {
+      const startTime = Date.now();
+      while (!etherspot?.state) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        if (Date.now() - startTime > 5000) {
+          throw new Error("Etherspot SDK not initialized after 5 seconds");
+        }
+        if (!etherspot) {
+          throw new Error("Etherspot SDK not initialized");
+        }
+      }
+      try {
+        const data = encodeFunctionData({
+          abi,
+          functionName,
+          args,
+        });
 
-  return etherspot;
+        await etherspot.clearUserOpsFromBatch();
+        await etherspot.addUserOpsToBatch({
+          to: contractAddress,
+          data,
+        });
+
+        const op = await etherspot.estimate({
+          paymasterDetails: {
+            url: `https://arka.etherspot.io?apiKey=${envVars.etherspotApiKey}&chainId=${CHAIN_ID}`,
+            context: { mode: "sponsor" },
+          },
+        });
+        console.log(`${functionName}->Estimated gas costs:`, op);
+
+        const uoHash = await etherspot.send(op);
+
+        console.log(`${functionName}-> UserOpHash: ${uoHash}`);
+
+        console.log(`${functionName}-> Waiting for  transaction...`);
+        let userOpsReceipt = null;
+        const timeout = Date.now() + 60000; // 1 minute timeout
+        while (userOpsReceipt === null && Date.now() < timeout) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+          userOpsReceipt = await etherspot.getUserOpReceipt(uoHash);
+        }
+        console.log(
+          "\x1b[33m%s\x1b[0m",
+          `${functionName}->Transaction Receipt: `,
+          userOpsReceipt
+        );
+
+        return { success: true, receipt: userOpsReceipt };
+      } catch (error) {
+        console.error(`${functionName}->Sponsored transaction failed:`, error);
+        throw error;
+      }
+    },
+    [etherspot]
+  );
+
+  return { executeSponsoredTransaction, etherspot, init: etherspot?.state$ };
 };
 
 export default useEtherspot;

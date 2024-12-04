@@ -348,7 +348,7 @@ const TicketListingFlow: React.FC = () => {
       {/* Only render Dialog when mounted to prevent hydration mismatch */}
       {mounted && (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogContent>
+          <DialogContent onPointerDownOutside={e => e.preventDefault()}>
             <DialogHeader>
               <DialogTitle>
                 {step === 1 && "List Your Ticket"}

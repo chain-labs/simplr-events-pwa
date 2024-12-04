@@ -32,7 +32,7 @@ export function TicketCard({
     <Card>
       <CardHeader>
         <Image
-          src={ticket.event.image}
+          src={ticket.event.image ?? "https://placehold.co/400x400"}
           alt={ticket.event.name}
           width={200}
           height={100}
