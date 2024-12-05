@@ -1,16 +1,22 @@
-import { arbitrum, arbitrumSepolia } from "wagmi/chains";
+import { arbitrum, arbitrumSepolia, base } from "wagmi/chains";
 
 export const CONTRACTS = {
   [arbitrumSepolia.id]: {
-    event: "0x15bc70911A7c5D440ce2A311b11CbE856A42A2F0",
-    marketplace: "0x5f72991538837Ba3D7D44885F8E691c14397e0dD",
-    escrow: "0x6E7e5BE250d92f7451235c4c927332E7e075bF24",
-    paymentToken: "0x380b37739F108c89a08D6E49D890C1CEdbdDCB55",
+    event: "0xF7913F6bBDd7C25E2B8EFbb232df512bEb5129b7",
+    marketplace: "0x4B562b4fAa56A5E80bF38aE5AD96bB0Ba49450b5",
+    escrow: "0x337E30817209B5eBf90FF73Ca145cf3E147c103D",
+    paymentToken: "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d",
   },
   [arbitrum.id]: {
     event: "0x1be5c471CB8e23782e2790e27e1106F785C75676",
     marketplace: "0xCbeB4D1A275F3c8c6095EbD4a503AFD77228Bb4e",
     escrow: "0x1190442f6b7505d3edc30c59e5B99EBfdEeF34e9",
     paymentToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+  },
+  [base.id]: {
+    event: "0xcaA885C2CcFfB15d41A66F6a676ff876f35F9520",
+    marketplace: "0x24857eD6E1Fe00161DDC4A9cd83277172D7d617f",
+    escrow: "0x716511223244de62dfdDf26461C926A46Ee2fC20",
+    paymentToken: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
   },
 };

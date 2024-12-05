@@ -82,7 +82,7 @@ export function TicketCard({
 
 export function TicketsSkeleton() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 opacity-25">
       {[...Array(3)].map((_, i) => (
         <div key={i} className="space-y-4">
           <Skeleton className="h-8 w-48" />

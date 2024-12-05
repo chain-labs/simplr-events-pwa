@@ -11,19 +11,20 @@ import {
   useWriteContract,
 } from "wagmi";
 import { arbitrum, arbitrumSepolia } from "viem/chains";
-import { parseUnits } from "viem";
+import { encodeAbiParameters, keccak256, parseUnits, toBytes } from "viem";
 
 import { envVars } from "@/lib/envVars";
 import { IPaymentContract } from "@/abi/PaymentToken";
 import { IContract } from "@/abi/Escrow";
+import { EVENTS } from "@/content";
 
-import { FormData } from "../components/ListButton";
+import { FormData } from "../components/ListButton/types";
 
 type Props = {
   formData: FormData;
+  ticketData: `0x${string}` | null;
 };
-
-const DEADLINE = "1731676800"; // 15th November 2024 4pm Thailand time
+// 15th November 2024 4pm Thailand time
 
 const getLatestTokenId = async (event: string) => {
   // const query = `query MyQuery($id: String!) {
@@ -44,7 +45,7 @@ const getLatestTokenId = async (event: string) => {
   return `${tokenId + 1}`;
 };
 
-const useListingTicket = ({ formData }: Props) => {
+const useListingTicket = ({ formData, ticketData }: Props) => {
   const account = useAccount();
   const { writeContractAsync: listTicket } = useWriteContract();
   const { writeContractAsync: approveTransfer } = useWriteContract();
@@ -65,22 +66,21 @@ const useListingTicket = ({ formData }: Props) => {
     const data = {
       tokenId,
       eventContract: EventContract.address,
-      name: "Devcon 2024 Test",
-      description: "NFT Ticket provided by Simplr Events for Devcon 2024",
-      image:
-        "https://ik.imagekit.io/chainlabs/Simplr_Events/devcon-banner_8zI7q3HB15.jpg?updatedAt=1731136738067",
+      name: `Digital Twin for ${EVENTS.tbw.event_name}`,
+      description: `NFT Ticket provided by Simplr Events for ${EVENTS.tbw.event_name}`,
+      image: EVENTS.tbw.image,
       attributes: [
         {
           trait_type: "Seat",
-          value: "General Admission",
+          value: formData.seat,
         },
         {
           trait_type: "Event Name",
-          value: "Devcon 2024",
+          value: EVENTS.tbw.event_name,
         },
         {
           trait_type: "Event Date",
-          value: "12th November 2024 - 15th Novemver 2024",
+          value: EVENTS.tbw.event_date,
         },
       ],
     };
@@ -95,9 +95,9 @@ const useListingTicket = ({ formData }: Props) => {
       functionName: "createTicket",
       args: [
         {
-          ticketSerialNumberHash: BigInt(formData.serialNumber),
-          seat: "General Admission",
-          verificationData: "", // bytes data
+          ticketSerialNumberHash: keccak256(toBytes(formData.serialNumber)),
+          seat: formData.seat,
+          verificationData: ticketData, // bytes data
           ticketEncryptedDataUri: "", // lit protocol's encrypted data
           ticketMetadata: `${
             envVars.isTestNetwork
@@ -107,6 +107,7 @@ const useListingTicket = ({ formData }: Props) => {
         },
       ] as const,
     };
+    console.log({ options });
 
     const sim = await client?.estimateContractGas({
       ...options,
@@ -187,7 +188,7 @@ const useListingTicket = ({ formData }: Props) => {
         tokenId: BigInt(tokenId),
         price: parseUnits(formData.price, PTContract.decimals),
         seller: account.address ?? "0x",
-        deadline: BigInt(DEADLINE),
+        deadline: BigInt(EVENTS.tbw.deadline),
       },
     });
 
@@ -214,7 +215,7 @@ const useListingTicket = ({ formData }: Props) => {
             tokenId: tokenId,
             price: parseUnits(formData.price, PTContract.decimals),
             seller: account.address as `0x${string}`,
-            deadline: BigInt(DEADLINE),
+            deadline: BigInt(EVENTS.tbw.deadline),
           },
         ],
       };
