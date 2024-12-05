@@ -2,6 +2,8 @@
 
 import React from "react";
 
+import { EVENTS } from "@/content";
+
 import useMarketplaceData from "../hooks/useMarketplaceData";
 
 import { TicketCard, TicketsSkeleton } from "./TicketCard";
@@ -11,7 +13,7 @@ export default function TicketMarketplace() {
 
   return (
     <div className="mt-8">
-      <h2 className="text-6xl font-bold mt-8 mb-4">Marketplace</h2>
+      <h2 className="text-6xl font-bold mt-8 mb-4">{EVENTS.tbw.even_name}</h2>
       {isLoading ? (
         <TicketsSkeleton />
       ) : (

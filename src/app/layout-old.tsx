@@ -6,12 +6,12 @@ import Analytics from "../components/Analytics";
 import "./globals.css";
 
 export const metadata = {
-  title: "Simplr Events - Coldplay",
+  title: "Simplr Events",
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-brandBlue">
       <head>
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID}`}

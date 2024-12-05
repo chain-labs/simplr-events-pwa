@@ -16,10 +16,16 @@ const config: Config = {
         primary2: "#0D3C85",
         primary3: "#BB04E8",
         "text-blue": "#340B8B",
+        brandBlue: "#645DD7",
+        brandYellow: "#F2FF49",
+        brandBlack: "#050505",
+        brandWhite: "#FAFAFA",
       },
       fontFamily: {
         sans: ["'DM Sans'", "sans-serif"],
         forum: ["'Forum'", "serif"],
+        gambarino: ['"Gambarino"', "serif"],
+        switzer: ['"Switzer"', "sans-serif"],
       },
       keyframes: {
         gradient: {

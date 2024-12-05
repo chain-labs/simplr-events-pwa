@@ -283,7 +283,7 @@ const TicketListingFlow: React.FC = () => {
   const [step, setStep] = useState(1);
   const [currentStage, setCurrentStage] = useState(0);
   const [formData, setFormData] = useState<FormData>({
-    // seat: "",
+    seat: "",
     serialNumber: "",
     price: "",
   });
@@ -338,19 +338,16 @@ const TicketListingFlow: React.FC = () => {
 
   return (
     <div>
-      <Button
-        onClick={openModal}
-        className="bg-slate-100 text-black rounded-[6px] hover:bg-slate-800 hover:text-white"
-      >
-        List your Ticket Here
-      </Button>
+      <p onClick={openModal} className="cursor-pointer">
+        sell your ticket
+      </p>
       {/* Only render Dialog when mounted to prevent hydration mismatch */}
       {mounted && (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>
-                {step === 1 && "List Your Ticket"}
+              <DialogTitle className="text-2xl">
+                {step === 1 && "Enter your Ticket Details"}
                 {step === 2 && "Confirm Listing"}
                 {step === 3 && "Listing in Progress"}
                 {step === 4 && "Listing Complete"}

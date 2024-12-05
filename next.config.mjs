@@ -6,7 +6,8 @@ const nextConfig = {
         return config;
     },
     images: {
-        domains: ["ik.imagekit.io", "placehold.co"]
+        domains: ["ik.imagekit.io", "placehold.co"],
+        dangerouslyAllowSVG: true,
     },
     async redirects() {
         return [
