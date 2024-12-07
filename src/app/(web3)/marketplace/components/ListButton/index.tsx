@@ -143,13 +143,14 @@ const TicketListingFlow: React.FC = () => {
                 formData={formData}
                 incrementProgress={incrementProgress}
                 ticketData={ticketData}
+                resetProgress={() => setCurrentStage(0)}
               />
             )}
             {step === 4 && <SuccessUI formData={formData} />}
           </DialogContent>
         </Dialog>
       )}
-      <Confetti run={step === 4} className="z-[1000]" />
+      {step === 4 && <Confetti run={step === 4} className="z-[1000]" />}
     </div>
   );
 };

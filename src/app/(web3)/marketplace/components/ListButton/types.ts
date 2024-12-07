@@ -21,6 +21,7 @@ export interface ProgressBarProps {
   incrementProgress: (stage: number) => void;
   formData: FormData;
   ticketData: `0x${string}` | null;
+  resetProgress: () => void;
 }
 
 export interface SuccessUIProps {
@@ -32,5 +33,5 @@ export const SEAT_OPTIONS = [
   "General Admission",
   "Student",
   "Developer",
-  "General Admission + Taiwan Blockchain Summit 11/18-11/19",
+  "General Admission + TBW Summit",
 ];
