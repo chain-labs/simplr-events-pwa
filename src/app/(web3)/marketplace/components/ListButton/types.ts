@@ -28,9 +28,9 @@ export interface SuccessUIProps {
 }
 
 export const SEAT_OPTIONS = [
-  "Front Row",
-  "Middle Row",
-  "Back Row",
-  "VIP Section",
+  "VIP",
   "General Admission",
+  "Student",
+  "Developer",
+  "General Admission + Taiwan Blockchain Summit 11/18-11/19",
 ];
