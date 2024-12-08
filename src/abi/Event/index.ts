@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { arbitrum, arbitrumSepolia } from "wagmi/chains";
+import { arbitrum, arbitrumSepolia, base } from "wagmi/chains";
 
 import { envVars } from "@/lib/envVars";
 import { CONTRACTS } from "@/abi/contracts";
@@ -19,7 +19,7 @@ const useEventContract = () => {
         .event as unknown as `0x${string}`;
       setContract({ abi, address });
     } else {
-      const address = CONTRACTS[arbitrum.id].event as unknown as `0x${string}`;
+      const address = CONTRACTS[base.id].event as unknown as `0x${string}`;
       setContract({ abi, address });
     }
   }, []);

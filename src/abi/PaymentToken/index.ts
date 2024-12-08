@@ -1,4 +1,4 @@
-import { arbitrum, arbitrumSepolia } from "wagmi/chains";
+import { arbitrum, arbitrumSepolia, base } from "wagmi/chains";
 import { useEffect, useState } from "react";
 
 import { envVars } from "@/lib/envVars";
@@ -29,7 +29,7 @@ const usePaymentTokenContract = () => {
       const decimals = 18;
       setContract({ abi, address, decimals });
     } else {
-      const address = CONTRACTS[arbitrum.id]
+      const address = CONTRACTS[base.id]
         .paymentToken as unknown as `0x${string}`;
       const decimals = 6;
       setContract({ abi, address, decimals });
