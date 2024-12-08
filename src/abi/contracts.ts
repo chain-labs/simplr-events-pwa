@@ -14,7 +14,7 @@ export const CONTRACTS = {
     paymentToken: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
   },
   [base.id]: {
-    event: "0xcaA885C2CcFfB15d41A66F6a676ff876f35F9520",
+    event: "0x7D41caDC4Ad09Af751BdA042ca78EE1d1F282CBD",
     marketplace: "0x24857eD6E1Fe00161DDC4A9cd83277172D7d617f",
     escrow: "0x716511223244de62dfdDf26461C926A46Ee2fC20",
     paymentToken: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
