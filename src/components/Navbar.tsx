@@ -55,14 +55,14 @@ export default function Navbar() {
 
   return (
     <header className="flex justify-between items-center font-switzer font-bold tracking-[0.02em] max-w-[1280px] mx-auto md:px-8 py-4 px-2">
-      <div>
+      <Link href="/">
         <Image
           src="https://ik.imagekit.io/chainlabs/simplr-events-designs/logo-face/svg/simplr-yellow_ClyqBegTE.svg?updatedAt=1733051453777"
           alt="Simplr Events Logo"
           width={100}
           height={50}
         />
-      </div>
+      </Link>
       <nav className="hidden md:flex items-center gap-[10px] text-brandWhite">
         {/* <p>link your ticket</p> */}
         <Link href="/marketplace" className="px-[16px] py-[8px]">
@@ -91,12 +91,14 @@ export default function Navbar() {
             <div className="mx-auto w-full max-w-sm flex flex-col items-center">
               <DrawerHeader>
                 <DrawerTitle>
-                  <Image
-                    src="https://ik.imagekit.io/chainlabs/simplr-events-designs/logo-face/svg/simplr-yellow_ClyqBegTE.svg?updatedAt=1733051453777"
-                    alt="Simplr Events Logo"
-                    width={100}
-                    height={50}
-                  />
+                  <Link href="/">
+                    <Image
+                      src="https://ik.imagekit.io/chainlabs/simplr-events-designs/logo-face/svg/simplr-yellow_ClyqBegTE.svg?updatedAt=1733051453777"
+                      alt="Simplr Events Logo"
+                      width={100}
+                      height={50}
+                    />
+                  </Link>
                 </DrawerTitle>
               </DrawerHeader>
               <div className="p-4 pb-0">
