@@ -26,6 +26,13 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     "Listing Ticket for Sale",
   ];
   const [error, setError] = React.useState(false);
+  const [savedTicketData, setSavedTicketData] = React.useState<
+    `0x${string}` | null
+  >(null);
+  const [savedTokenId, setSavedTokenId] = React.useState<string | null>(null);
+  const [savedSignature, setSavedSignature] = React.useState<string | null>(
+    null
+  );
 
   const {
     handleVerify,
@@ -39,33 +46,54 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   const MarketplaceContract = useMarketplaceContract();
   const PTContract = usePaymentTokenContract();
 
-  const process = useCallback(async () => {
-    resetProgress();
-    try {
-      const ticketData = await handleVerify();
-      incrementProgress(1);
-      const tokenId = await handleMint(EventContract, ticketData);
-      incrementProgress(2);
-      const signature = await handleSignature(
-        tokenId,
-        EventContract,
-        MarketplaceContract,
-        PTContract
-      );
-      incrementProgress(3);
-      await handleList(
-        signature,
-        tokenId,
-        EventContract,
-        MarketplaceContract,
-        PTContract
-      );
-      incrementProgress(4);
-    } catch (err) {
-      console.error("Error:", err);
-      setError(true);
-    }
-  }, [EventContract, MarketplaceContract, PTContract]);
+  const process = useCallback(
+    async (
+      options: {
+        ticketData: `0x${string}` | null;
+        ticketId: string | null;
+        signature: string | null;
+      } = { ticketData: null, ticketId: null, signature: null }
+    ) => {
+      // resetProgress();
+      const {
+        ticketData: savedTicketData,
+        ticketId: savedTicketId,
+        signature: savedSignature,
+      } = options;
+
+      try {
+        const ticketData = savedTicketData ?? (await handleVerify());
+        setSavedTicketData(ticketData);
+        incrementProgress(1);
+        const tokenId =
+          savedTicketId ?? (await handleMint(EventContract, ticketData));
+        setSavedTokenId(tokenId);
+        incrementProgress(2);
+        const signature =
+          savedSignature ??
+          (await handleSignature(
+            tokenId,
+            EventContract,
+            MarketplaceContract,
+            PTContract
+          ));
+        setSavedSignature(signature);
+        incrementProgress(3);
+        await handleList(
+          signature,
+          tokenId,
+          EventContract,
+          MarketplaceContract,
+          PTContract
+        );
+        incrementProgress(4);
+      } catch (err) {
+        console.error("Error:", err);
+        setError(true);
+      }
+    },
+    [EventContract, MarketplaceContract, PTContract]
+  );
 
   useEffect(() => {
     if (
@@ -124,7 +152,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           >
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                error && index <= currentStage
+                error && index === currentStage
                   ? "bg-red-500 shadow-lg shadow-red-500/30"
                   : index < currentStage
                   ? "bg-green-500 shadow-lg shadow-green-500/30"
@@ -139,7 +167,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
             </div>
             <span
               className={`font-medium ${
-                error && index <= currentStage ? "text-red-500" : "text-white"
+                error && index === currentStage ? "text-red-500" : "text-white"
               }`}
             >
               {stage}
@@ -151,7 +179,11 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         <button
           onClick={() => {
             setError(false);
-            process();
+            process({
+              ticketData: savedTicketData,
+              ticketId: savedTokenId,
+              signature: savedSignature,
+            });
           }}
           className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300"
         >
