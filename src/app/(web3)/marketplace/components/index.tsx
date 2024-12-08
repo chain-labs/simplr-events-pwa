@@ -6,7 +6,7 @@ import TicketMarketplace from "./TicketMarketplace";
 
 const MarketplaceComponent = () => {
   return (
-    <div className="bg-gray-100">
+    <div>
       <div className="min-h-screen max-w-[1200px] mx-auto  p-4">
         <div className="mt-4">
           <TicketMarketplace />

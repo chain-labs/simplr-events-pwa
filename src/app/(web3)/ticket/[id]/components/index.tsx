@@ -202,8 +202,8 @@ function InfoItem({
     <div className="flex items-center space-x-3">
       <Icon className="w-5 h-5 text-indigo-500" />
       <div>
-        <p className="text-sm font-medium text-gray-500">{label}</p>
-        <p className="font-semibold text-gray-900">{value}</p>
+        <p className="text-sm font-bold text-gray-500">{label}</p>
+        <p className="font-normal font-switzer text-gray-900">{value}</p>
       </div>
     </div>
   );
