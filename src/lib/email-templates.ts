@@ -1,5 +1,6 @@
 export interface SellerEmailData {
   sellerName: string;
+  buyerName: string;
   tokenId: string;
   orderNumber: string;
   buyerEmailId: string;
@@ -11,6 +12,7 @@ export interface SellerEmailData {
 // src/lib/email-templates.ts
 export const getSellerEmailTemplate = ({
   sellerName,
+  buyerName,
   tokenId,
   orderNumber,
   buyerEmailId,
@@ -85,39 +87,35 @@ export const getSellerEmailTemplate = ({
       <div class="content">
           <p>Dear ${sellerName},</p>
           
-          <p>Great news! Your Devcon ticket (Token ID: <span class="highlight">${tokenId}</span>) has been successfully sold on our platform. The buyer (<span class="highlight">${buyerEmailId}</span>) is eagerly waiting to receive the ticket.</p>
+          <p>Great news! Your Taipei Blockchain Week ticket (Token ID: <span class="highlight">${tokenId}</span>) has been successfully sold on our platform. The buyer (<span class="highlight">${buyerEmailId}</span>) is eagerly waiting to receive the ticket.</p>
           
           <p>To complete this transaction and receive your payment, please follow these steps:</p>
           
-          <p>1. Send an email to <span class="highlight">${devconEmail}</span> with the following message:</p>
+          <p>1. Send an email to <span class="highlight">${buyerEmailId}</span> with the following message:</p>
           
           <div class="email-template">
-              Hey Devcon team,<br><br>
-              
-              I won't be able to able to attend the conference and I would like to transfer the tickets to my acquaintance with whom I was introduced to by Simplr Events team. Find details below:<br><br>
-              
-              Ticket owner email ID: ${sellerEmailId}<br>
-              New Ticket Owner email ID: ${buyerEmailId}<br>
-              Order number: <strong>*${orderNumber}*</strong><br><br>
-              
-              Thanks for understanding the situation.
+              Hey ${buyerName},<br><br>
+              To claim your ticket, please go to <a href="https://app.moongate.id/e/taipei-blockchain-week-2024/checkout/326c01f3-fcae-4381-b8b1-3c1080c643e4?utm_source=discover&eventId=taipei-blockchain-week-2024" target="_blank" rel="noreferrer">this link</a>.<br><br>
+              Paste this redeem code in the "Redeem Code" field to claim your ticket:<br>
+              <<-enter redeem code here->><br><br>
+
+              Thanks for buying the ticket. Enjoy the event!<br><br>
           </div>
           
           <div class="important-notes">
               <strong>Important Notes:</strong>
               <ul>
-                  <li>Make sure to include your original ticket order number in the email</li>
-                  <li>The transfer must be initiated from your registered email address</li>
-                  <li>Keep all the ticket details and order numbers handy</li>
+                  <li>Make sure to send redeem code for the correct ticket.</li>
+                  <li>Keep all the ticket details and order numbers handy in any case.</li>
               </ul>
           </div>
           
           <div class="next-steps">
               <strong>Next Steps:</strong>
               <ol>
-                  <li>Once Devcon processes your transfer request, the ticket will be transferred to the buyer</li>
-                  <li>The buyer will then mark the order as finalized in our system</li>
+                  <li>Once the buyer redeems the ticket, they will then mark the order as finalized in our system</li>
                   <li>Upon confirmation, your payment will be processed and sent to your registered account</li>
+                  <li>If they don't mark the order as finalized even after redeeming the ticket, please dispute the transaction on this <a href="https://taipei.simplrhq.com/ticket/ticket-0x7D41caDC4Ad09Af751BdA042ca78EE1d1F282CBD-3" target="_blank" rel="noreferrer">link</a></li>
               </ol>
           </div>
           
