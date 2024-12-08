@@ -133,39 +133,37 @@ export const getSellerEmailTemplate = ({
 
   // Also include a text version for email clients that don't support HTML
   const text = `Dear ${sellerName},
-  
-  Great news! Your Devcon ticket (Token ID: ${tokenId}) has been successfully sold on our platform. The buyer (${buyerEmailId}) is eagerly waiting to receive the ticket.
-  
-  To complete this transaction and receive your payment, please follow these steps:
-  
-  1. Send an email to ${devconEmail} with the following message:
-  
-  Hey Devcon team,
-  
-  I won't be able to able to attend the conference and I would like to transfer the tickets to my acquaintance with whom I was introduced to by Simplr Events team. Find details below:
-  
-  Ticket owner email ID: ${sellerEmailId}
-  New Ticket Owner email ID: ${buyerEmailId}
-  Order number: *${orderNumber}*
-  
-  Thanks for understanding the situation.
-  
-  Important Notes:
-  - Make sure to include your original ticket order number in the email
-  - The transfer must be initiated from your registered email address
-  - Keep all the ticket details and order numbers handy
-  
-  Next Steps:
-  1. Once Devcon processes your transfer request, the ticket will be transferred to the buyer
-  2. The buyer will then mark the order as finalized in our system
-  3. Upon confirmation, your payment will be processed and sent to your registered account
-  
-  If you have any questions or need assistance with the transfer process, please don't hesitate to contact our team (telegram: https://t.me/+oXNaYmx7iwY3NjU1).
-  
-  Best regards,
-  Simplr Events Team
-  
-  Note: This transaction must be completed within ${expiryHours} hours to avoid any delays or cancellations.`;
+
+Great news! Your Taipei Blockchain Week ticket (Token ID: ${tokenId}) has been successfully sold on our platform. The buyer (${buyerEmailId}) is eagerly waiting to receive the ticket.
+
+To complete this transaction and receive your payment, please follow these steps:
+
+1. Send an email to ${buyerEmailId} with the following message:
+
+Hey ${buyerName},
+
+To claim your ticket, please go to the following link: https://app.moongate.id/e/taipei-blockchain-week-2024/checkout/326c01f3-fcae-4381-b8b1-3c1080c643e4?utm_source=discover&eventId=taipei-blockchain-week-2024
+
+Paste this redeem code in the "Redeem Code" field to claim your ticket:
+<<-enter redeem code here->>
+
+Thanks for buying the ticket. Enjoy the event!
+
+Important Notes:
+- Make sure to send redeem code for the correct ticket.
+- Keep all the ticket details and order numbers handy in any case.
+
+Next Steps:
+1. Once the buyer redeems the ticket, they will then mark the order as finalized in our system
+2. Upon confirmation, your payment will be processed and sent to your registered account
+3. If they don't mark the order as finalized even after redeeming the ticket, please dispute the transaction on this link: https://taipei.simplrhq.com/ticket/ticket-0x7D41caDC4Ad09Af751BdA042ca78EE1d1F282CBD-${tokenId}
+
+If you have any questions or need assistance with the transfer process, please don't hesitate to contact our team (Telegram: https://t.me/+oXNaYmx7iwY3NjU1).
+
+Best regards,
+Simplr Events Team
+
+Note: This transaction must be completed within ${expiryHours} hours to avoid any delays or cancellations.`;
 
   return {
     subject: "Your Ticket Has Been Sold - Action Required for Transfer",
