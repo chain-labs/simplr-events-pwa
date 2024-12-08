@@ -89,9 +89,12 @@ export const getSellerEmailTemplate = ({
           
           <p>Great news! Your Taipei Blockchain Week ticket (Token ID: <span class="highlight">${tokenId}</span>) has been successfully sold on our platform. The buyer (<span class="highlight">${buyerEmailId}</span>) is eagerly waiting to receive the ticket.</p>
           
-          <p>To complete this transaction and receive your payment, please follow these steps:</p>
+          <p>To complete this transaction and receive your payment, please follow these instructions:</p>
           
-          <p>1. Send an email to <span class="highlight">${buyerEmailId}</span> with the following message:</p>
+          <p>Send an email to <span class="highlight">${buyerEmailId}</span> with the following message:</p>
+          <div class="email-template">
+          <strong>Subject:</strong> Taipei Blockchain Week Ticket bought on Simplr Events
+          </div>
           
           <div class="email-template">
               Hey ${buyerName},<br><br>
@@ -136,9 +139,11 @@ export const getSellerEmailTemplate = ({
 
 Great news! Your Taipei Blockchain Week ticket (Token ID: ${tokenId}) has been successfully sold on our platform. The buyer (${buyerEmailId}) is eagerly waiting to receive the ticket.
 
-To complete this transaction and receive your payment, please follow these steps:
+To complete this transaction and receive your payment, please follow these instructions:
 
-1. Send an email to ${buyerEmailId} with the following message:
+Send an email to ${buyerEmailId} with the following message:
+
+Subject: Taipei Blockchain Week Ticket bought on Simplr Events
 
 Hey ${buyerName},
 
