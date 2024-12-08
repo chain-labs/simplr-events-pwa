@@ -154,6 +154,7 @@ export default function TicketActions({
         buyer: userWallet,
         orderNumber: ticket.serialNumber,
       });
+      console.log("Email sent");
     } catch (err) {
       console.error(err);
       setIsDialogOpen(false);

@@ -61,29 +61,10 @@ const TicketListingFlow: React.FC = () => {
     if (!isOpen) {
       closeModal();
     }
-  }, [isOpen]);
+  }, [isOpen, step]);
 
   const handleSubmit = async () => {
-    const mainContract = EVENTS.tbw.mainContract;
-    const messageHash = keccak256(
-      concat([
-        mainContract as `0x${string}`,
-        Number(formData.serialNumber).toString(16) as `0x${string}`,
-      ])
-    );
-
-    const signature = await signMessage(config, {
-      account: account.address,
-      message: messageHash,
-    });
-
-    const ticketData = encodeAbiParameters(
-      [{ type: "address" }, { type: "uint256" }, { type: "bytes" }],
-      [account.address ?? "0x", BigInt(formData.serialNumber), signature]
-    );
-
     setStep(2);
-    setTicketData(ticketData);
   };
 
   const handleConfirm = (): void => {
@@ -93,7 +74,7 @@ const TicketListingFlow: React.FC = () => {
   const handleGoBack = (): void => setStep(1);
 
   const incrementProgress = (stage: number): void => {
-    if (stage < 3) {
+    if (stage < 4) {
       setCurrentStage(stage);
       stage++;
     } else {
@@ -106,13 +87,25 @@ const TicketListingFlow: React.FC = () => {
     return null;
   }
 
+  const handleOpenChange = (open: boolean, override?: boolean): void => {
+    if (override) {
+      setIsOpen(open);
+      return;
+    }
+    if (!open && step === 3) {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  };
+
   return (
     <div>
       <p onClick={openModal} className="cursor-pointer font-bold">
         sell your ticket
       </p>
       {mounted && (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <Dialog open={isOpen} onOpenChange={handleOpenChange}>
           <DialogContent className="bg-black bg-opacity-10 backdrop-blur-lg border border-gray-600">
             <DialogHeader>
               <DialogTitle className="text-2xl text-white">
@@ -144,6 +137,7 @@ const TicketListingFlow: React.FC = () => {
                 incrementProgress={incrementProgress}
                 ticketData={ticketData}
                 resetProgress={() => setCurrentStage(0)}
+                closeModal={() => handleOpenChange(false, true)}
               />
             )}
             {step === 4 && <SuccessUI formData={formData} />}

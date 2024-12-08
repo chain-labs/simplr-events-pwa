@@ -69,6 +69,11 @@ export default function Navbar() {
           buy
         </Link>
         {account.address && <TicketListingFlow />}
+        {account.address && (
+          <Link href="/my-tickets" className="px-[16px] py-[8px]">
+            my tickets
+          </Link>
+        )}
       </nav>
       <div className="hidden md:flex justify-center items-center gap-[10px]">
         <button className="rounded-full px-[16px] py-[8px]">contact us</button>

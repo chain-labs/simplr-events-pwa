@@ -6,6 +6,8 @@ import Link from "next/link";
 import { CalendarIcon, MapPinIcon, TicketIcon } from "lucide-react";
 import { formatUnits } from "viem";
 import { twMerge } from "tailwind-merge";
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 import {
   Card,
@@ -46,13 +48,14 @@ const ticketCategories = [
 
 export default function MyTicketsPage() {
   const { userListings, userSold, userBought, isLoading } = useMyTicketsData();
+  const account = useAccount();
 
   return (
     <div className="container mx-auto py-6 px-4">
       <h1 className="text-3xl font-bold mb-6">My Tickets</h1>
       {isLoading ? (
         <TicketsSkeleton />
-      ) : (
+      ) : account.address ? (
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-6 md:mb-8">
             Listed for Sale
@@ -104,6 +107,8 @@ export default function MyTicketsPage() {
             )}
           </div>
         </div>
+      ) : (
+        <ConnectButton label="sign in" />
       )}
     </div>
   );

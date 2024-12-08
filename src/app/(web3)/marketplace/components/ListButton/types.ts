@@ -22,6 +22,7 @@ export interface ProgressBarProps {
   formData: FormData;
   ticketData: `0x${string}` | null;
   resetProgress: () => void;
+  closeModal: () => void;
 }
 
 export interface SuccessUIProps {

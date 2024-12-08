@@ -2,6 +2,7 @@ import {
   getWalletClient,
   waitForTransactionReceipt,
   readContract,
+  signMessage,
 } from "@wagmi/core";
 import axios from "axios";
 import {
@@ -11,7 +12,13 @@ import {
   useWriteContract,
 } from "wagmi";
 import { arbitrum, arbitrumSepolia, base } from "viem/chains";
-import { encodeAbiParameters, keccak256, parseUnits, toBytes } from "viem";
+import {
+  concat,
+  encodeAbiParameters,
+  keccak256,
+  parseUnits,
+  toBytes,
+} from "viem";
 
 import { envVars } from "@/lib/envVars";
 import { IPaymentContract } from "@/abi/PaymentToken";
@@ -45,7 +52,7 @@ const getLatestTokenId = async (event: string) => {
   return `${tokenId + 1}`;
 };
 
-const useListingTicket = ({ formData, ticketData }: Props) => {
+const useListingTicket = ({ formData }: Props) => {
   const account = useAccount();
   const { writeContractAsync: listTicket } = useWriteContract();
   const { writeContractAsync: approveTransfer } = useWriteContract();
@@ -53,7 +60,32 @@ const useListingTicket = ({ formData, ticketData }: Props) => {
   const config = useConfig();
   const client = usePublicClient();
 
-  const handleMint = async (EventContract: IContract) => {
+  const handleVerify = async () => {
+    const mainContract = EVENTS.tbw.mainContract;
+    const messageHash = keccak256(
+      concat([
+        mainContract as `0x${string}`,
+        Number(formData.serialNumber).toString(16) as `0x${string}`,
+      ])
+    );
+
+    const signature = await signMessage(config, {
+      account: account.address,
+      message: messageHash,
+    });
+
+    const ticketData = encodeAbiParameters(
+      [{ type: "address" }, { type: "uint256" }, { type: "bytes" }],
+      [account.address ?? "0x", BigInt(formData.serialNumber), signature]
+    );
+
+    return ticketData;
+  };
+
+  const handleMint = async (
+    EventContract: IContract,
+    ticketData: `0x${string}`
+  ) => {
     // upload metadata and get uri
     const tokenIdCounter = await readContract(config, {
       abi: EventContract.abi,
@@ -73,6 +105,10 @@ const useListingTicket = ({ formData, ticketData }: Props) => {
         {
           trait_type: "Seat",
           value: formData.seat,
+        },
+        {
+          trait_type: "Token Id",
+          value: formData.serialNumber,
         },
         {
           trait_type: "Event Name",
@@ -248,6 +284,7 @@ const useListingTicket = ({ formData, ticketData }: Props) => {
   };
 
   return {
+    handleVerify,
     handleMint,
     handleApprove,
     handleSignature,

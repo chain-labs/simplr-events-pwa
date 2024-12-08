@@ -17,16 +17,23 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   formData,
   ticketData,
   resetProgress,
+  closeModal,
 }) => {
   const stages: string[] = [
-    "Creating your Ticket Digital Twin",
-    "Getting your Signature",
-    "Listing your Ticket for Sale",
+    "Verifying your ticket ownership",
+    "Creating Digital Twin",
+    "Generating signature for listing",
+    "Listing Ticket for Sale",
   ];
   const [error, setError] = React.useState(false);
 
-  const { handleMint, handleApprove, handleSignature, handleList } =
-    useListingTicket({ formData, ticketData });
+  const {
+    handleVerify,
+    handleMint,
+    handleApprove,
+    handleSignature,
+    handleList,
+  } = useListingTicket({ formData, ticketData });
 
   const EventContract = useEventContract();
   const MarketplaceContract = useMarketplaceContract();
@@ -35,15 +42,17 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   const process = useCallback(async () => {
     resetProgress();
     try {
-      const tokenId = await handleMint(EventContract);
+      const ticketData = await handleVerify();
       incrementProgress(1);
+      const tokenId = await handleMint(EventContract, ticketData);
+      incrementProgress(2);
       const signature = await handleSignature(
         tokenId,
         EventContract,
         MarketplaceContract,
         PTContract
       );
-      incrementProgress(2);
+      incrementProgress(3);
       await handleList(
         signature,
         tokenId,
@@ -51,7 +60,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         MarketplaceContract,
         PTContract
       );
-      incrementProgress(3);
+      incrementProgress(4);
     } catch (err) {
       console.error("Error:", err);
       setError(true);
@@ -147,6 +156,16 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           className="w-full bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300"
         >
           Retry
+        </button>
+      )}
+      {error && (
+        <button
+          onClick={() => {
+            closeModal();
+          }}
+          className="w-full bg-brandWhite hover:bg-brandBlack text-brandBlack  hover:text-brandWhite font-medium py-2 px-4 rounded-lg transition-colors duration-300"
+        >
+          Cancel
         </button>
       )}
     </div>
