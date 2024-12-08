@@ -37,6 +37,7 @@ export async function POST(request) {
     const emailService = new EmailService();
     const template = getSellerEmailTemplate({
       sellerName: sellerUser.name,
+      buyerName: buyerUser.name,
       tokenId: body.tokenId,
       orderNumber: body.orderNumber,
       buyerEmailId: buyerUser.email,

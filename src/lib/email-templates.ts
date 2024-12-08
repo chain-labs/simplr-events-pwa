@@ -115,7 +115,7 @@ export const getSellerEmailTemplate = ({
               <ol>
                   <li>Once the buyer redeems the ticket, they will then mark the order as finalized in our system</li>
                   <li>Upon confirmation, your payment will be processed and sent to your registered account</li>
-                  <li>If they don't mark the order as finalized even after redeeming the ticket, please dispute the transaction on this <a href="https://taipei.simplrhq.com/ticket/ticket-0x7D41caDC4Ad09Af751BdA042ca78EE1d1F282CBD-3" target="_blank" rel="noreferrer">link</a></li>
+                  <li>If they don't mark the order as finalized even after redeeming the ticket, please dispute the transaction on this <a href="https://taipei.simplrhq.com/ticket/ticket-0x7D41caDC4Ad09Af751BdA042ca78EE1d1F282CBD-${tokenId}" target="_blank" rel="noreferrer">link</a></li>
               </ol>
           </div>
           
