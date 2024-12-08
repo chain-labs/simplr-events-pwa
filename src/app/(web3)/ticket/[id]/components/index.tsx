@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { formatUnits } from "viem";
 import axios from "axios";
-import { Calendar, MapPin, QrCode, Tag, Timer } from "lucide-react";
+import { Calendar, MapPin, QrCode, ScanQrCode, Tag, Timer } from "lucide-react";
 import { useAccount } from "wagmi";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -150,14 +150,14 @@ export default function TicketComponent({ ticketId }: Props) {
           <CardContent className="p-6">
             <div className="grid grid-cols-2 gap-6 mb-6">
               <InfoItem icon={MapPin} label="Seat No" value={ticket.seatNo} />
-              {account.address === ticket.seller ||
+              {/* {account.address === ticket.seller ||
               account.address === ticket.buyer ? (
                 <InfoItem
-                  icon={QrCode}
-                  label="Order Number"
+                  icon={ScanQrCode}
+                  label="TBW Token Number"
                   value={ticket?.serialNumber ?? "-"}
                 />
-              ) : null}
+              ) : null} */}
               <InfoItem
                 icon={Tag}
                 label="Price"

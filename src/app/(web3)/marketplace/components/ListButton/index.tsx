@@ -108,7 +108,7 @@ const TicketListingFlow: React.FC = () => {
 
   return (
     <div>
-      <p onClick={openModal} className="cursor-pointer">
+      <p onClick={openModal} className="cursor-pointer font-bold">
         sell your ticket
       </p>
       {mounted && (

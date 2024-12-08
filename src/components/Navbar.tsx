@@ -4,9 +4,20 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
+import { Menu, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import TicketListingFlow from "@/app/(web3)/marketplace/components/ListButton";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 import {
   Dialog,
@@ -42,78 +53,8 @@ export default function Navbar() {
     }
   }, [account.address]);
 
-  // return (
-  //   <nav className="bg-slate-700 border-b py-2 md:px-4">
-  //     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-  //       <div className="flex justify-between items-center h-16">
-  //         <div className="flex items-center gap-x-6">
-  //           <Link
-  //             href="/marketplace"
-  //             className="flex-shrink-0 flex items-center"
-  //           >
-  //             <div>
-  //               <img
-  //                 src="/images/logo.svg"
-  //                 alt="logo"
-  //                 className="w-16 sm:w-24"
-  //               />
-  //             </div>
-  //           </Link>
-  //           <div className="hidden md:flex items-center gap-x-4">
-  //             {account.address && (
-  //               <Link href={"/my-tickets"}>
-  //                 <p className="font-normal text-white cursor-pointer">
-  //                   My Tickets
-  //                 </p>
-  //               </Link>
-  //             )}
-  //             <Link href={"/marketplace"}>
-  //               <p className="font-normal text-white cursor-pointer">
-  //                 Marketplace
-  //               </p>
-  //             </Link>
-  //           </div>
-  //         </div>
-  //         <button
-  //           className="sm:hidden text-white"
-  //           onClick={() => setDrawerOpen(!drawerOpen)}
-  //         >
-  //           Menu
-  //         </button>
-  //         <div className="hidden sm:flex items-center gap-x-4">
-  //           <a
-  //             href={"https://t.me/+oXNaYmx7iwY3NjU1"}
-  //             target="_blank"
-  //             rel="noreferrer"
-  //           >
-  //             <p className="font-normal text-white cursor-pointer">Telegram</p>
-  //           </a>
-  //           {account.address && <TicketListingFlow />}
-  //           <ConnectButton />
-  //         </div>
-  //       </div>
-  //     </div>
-  //     {drawerOpen && (
-  //       <div className="sm:hidden bg-slate-800 p-4 flex flex-col gap-y-2 absolute top-20 left-0 w-full z-10">
-  //         <ConnectButton />
-  //         {account.address && <TicketListingFlow />}
-  //         {account.address && (
-  //           <Link href={"/my-tickets"}>
-  //             <p className="font-normal text-white cursor-pointer">
-  //               My Tickets
-  //             </p>
-  //           </Link>
-  //         )}
-  //         <Link href={"/marketplace"}>
-  //           <p className="font-normal text-white cursor-pointer">Marketplace</p>
-  //         </Link>
-  //       </div>
-  //     )}
-  //   </nav>
-  // );
-
   return (
-    <header className="flex justify-between items-center font-switzer font-bold tracking-[0.02em] max-w-[1280px] mx-auto px-8 py-4">
+    <header className="flex justify-between items-center font-switzer font-bold tracking-[0.02em] max-w-[1280px] mx-auto md:px-8 py-4 px-2">
       <div>
         <Image
           src="https://ik.imagekit.io/chainlabs/simplr-events-designs/logo-face/svg/simplr-yellow_ClyqBegTE.svg?updatedAt=1733051453777"
@@ -122,19 +63,72 @@ export default function Navbar() {
           height={50}
         />
       </div>
-      <nav className="flex items-center gap-[10px] text-brandWhite">
-        {/* <p>link your ticket</p> */}
-        <Link href="/marketplace" className="px-[16px] py-[8px]">
-          buy
-        </Link>
-        {account.address && <TicketListingFlow />}
-      </nav>
-      <div className="flex justify-center items-center gap-[10px]">
-        <button className="rounded-full px-[16px] py-[8px]">contact us</button>
-        {/* <button className="rounded-full px-[16px] py-[8px]" >sign in</button>
-         */}
-        <ConnectButton label="sign in" />
+      <div className="hidden md:block">
+        <nav className="flex items-center gap-[10px] text-brandWhite">
+          {/* <p>link your ticket</p> */}
+          <Link href="/marketplace" className="px-[16px] py-[8px]">
+            buy
+          </Link>
+          {account.address && <TicketListingFlow />}
+        </nav>
+        <div className="flex justify-center items-center gap-[10px]">
+          <button className="rounded-full px-[16px] py-[8px]">
+            contact us
+          </button>
+          {/* <button className="rounded-full px-[16px] py-[8px]" >sign in</button>
+           */}
+          <ConnectButton label="sign in" />
+        </div>
       </div>
+      <div>
+        <ConnectButton label="sign in" showBalance={false} />
+      </div>
+
+      <Drawer activeSnapPoint="top">
+        <DrawerTrigger asChild>
+          <Menu color="#F2FF49" />
+        </DrawerTrigger>
+        <DrawerContent className="bg-brandBlue border-none font-switzer text-white">
+          <div className="mx-auto w-full max-w-sm flex flex-col items-center">
+            <DrawerHeader>
+              <DrawerTitle>
+                <Image
+                  src="https://ik.imagekit.io/chainlabs/simplr-events-designs/logo-face/svg/simplr-yellow_ClyqBegTE.svg?updatedAt=1733051453777"
+                  alt="Simplr Events Logo"
+                  width={100}
+                  height={50}
+                />
+              </DrawerTitle>
+            </DrawerHeader>
+            <div className="p-4 pb-0">
+              <nav className="flex items-center gap-[10px] text-brandWhite">
+                {/* <p>link your ticket</p> */}
+                <Link
+                  href="/marketplace"
+                  className="px-[16px] py-[8px] font-bold"
+                >
+                  buy
+                </Link>
+                {account.address && <TicketListingFlow />}
+              </nav>
+              <div className="flex justify-center items-center gap-[10px] font-bold">
+                <button className="rounded-full px-[16px] py-[8px]">
+                  contact us
+                </button>
+                {/* <button className="rounded-full px-[16px] py-[8px]" >sign in</button>
+                 */}
+              </div>
+            </div>
+            <DrawerFooter>
+              <DrawerClose asChild>
+                <Button className="bg-white rounded-full h-8 w-8 text-brandBlack">
+                  <X />
+                </Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </div>
+        </DrawerContent>
+      </Drawer>
       <UserForm isOpen={modal} setIsOpen={setModal} />
     </header>
   );
