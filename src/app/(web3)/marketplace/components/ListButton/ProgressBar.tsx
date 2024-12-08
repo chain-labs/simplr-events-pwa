@@ -85,15 +85,19 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
               className="object-cover"
             />
           </div>
-          <div className="flex flex-col gap-y-4">
+          <div className="flex flex-col gap-y-2">
             {[
               { label: "Seat", value: formData.seat },
               { label: "TBW Moongate Token ID", value: formData.serialNumber },
               { label: "Price", value: `${formData.price} USD` },
             ].map(({ label, value }) => (
-              <div key={label} className="space-y-1">
-                <h5 className="text-slate-400/80 text-sm">{label}</h5>
-                <p className="font-bold text-xl text-white">{value}</p>
+              <div key={label}>
+                <h5 className="text-slate-400/80 md:text-sm text-xs">
+                  {label}
+                </h5>
+                <p className="font-bold md:text-xl text-white text-sm">
+                  {value}
+                </p>
               </div>
             ))}
           </div>
