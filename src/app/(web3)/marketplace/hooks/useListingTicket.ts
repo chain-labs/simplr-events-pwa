@@ -10,7 +10,7 @@ import {
   usePublicClient,
   useWriteContract,
 } from "wagmi";
-import { arbitrum, arbitrumSepolia } from "viem/chains";
+import { arbitrum, arbitrumSepolia, base } from "viem/chains";
 import { encodeAbiParameters, keccak256, parseUnits, toBytes } from "viem";
 
 import { envVars } from "@/lib/envVars";
@@ -162,7 +162,7 @@ const useListingTicket = ({ formData, ticketData }: Props) => {
       // sampled from Marketplace.sol:~line 60
       name: "SimplrMarketplace",
       version: "1.0.0",
-      chainId: envVars.isTestNetwork ? arbitrumSepolia.id : arbitrum.id,
+      chainId: envVars.isTestNetwork ? arbitrumSepolia.id : base.id,
       verifyingContract: MarketplaceContract.address,
     } as const;
 
