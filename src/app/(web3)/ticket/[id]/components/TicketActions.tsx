@@ -34,6 +34,7 @@ import useTicketActions from "../hooks/useTicketActions";
 export default function TicketActions({
   ticket,
   refreshTicket,
+  purchaseTrigger,
 }: {
   ticket: TicketMetadata;
   refreshTicket: () => void;
@@ -41,6 +42,7 @@ export default function TicketActions({
 }) {
   const {
     isSold,
+    setIsSold,
     userRole,
     ticketPrice,
     handleBuy,
@@ -49,7 +51,7 @@ export default function TicketActions({
     isDialogOpen,
     dialogState,
     setIsDialogOpen,
-  } = useTicketActions(ticket, refreshTicket);
+  } = useTicketActions(ticket, refreshTicket, purchaseTrigger);
 
   if (!isSold) {
     return (
@@ -68,7 +70,10 @@ export default function TicketActions({
         </Button>
         <PurchaseDialog
           isOpen={isDialogOpen}
-          onClose={() => setIsDialogOpen(false)}
+          onClose={() => {
+            setIsDialogOpen(false);
+            setIsSold(true);
+          }}
           state={dialogState}
         />
       </div>
@@ -185,7 +190,7 @@ function PurchaseDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="bg-black bg-opacity-10 backdrop-blur-lg border border-gray-600">
+      <DialogContent className="bg-black bg-opacity-10 backdrop-blur-lg border border-gray-600 text-brandWhite">
         <DialogHeader>
           <DialogTitle className="text-2xl text-white">
             {state !== 3 ? "Purchasing Ticket" : "Purchase Successful"}
@@ -225,6 +230,22 @@ function PurchaseDialog({
             <p className="text-white">
               Your ticket has been successfully purchased!
             </p>
+            <div className="bg-[#1a1a1a] px-8 py-6 overflow-hidden border border-white/10 rounded-xl shadow-lg transition-all duration-300 hover:border-white/20 text-brandYellow ">
+              {/* <h2 className="text-3xl font-bold  text-opacity-100 text-brandWhite ">
+                Important
+              </h2> */}
+              <ul className="flex flex-col gap-y-2 text-opacity-50">
+                <li>
+                  The buyer has been notified about the purchase and they will
+                  send you instructions for redeeming the ticket along with the
+                  redeem code.
+                </li>
+                <li>
+                  Once you recieve the ticket, come back to this ticket and
+                  confirm you have recieved the ticket.
+                </li>
+              </ul>
+            </div>
             <Button
               onClick={onClose}
               className="w-full bg-brandWhite hover:bg-brandBlack text-brandBlack hover:text-brandWhite font-medium py-2 px-4 rounded-lg transition-colors duration-300"

@@ -21,7 +21,8 @@ type UserRole = "buyer" | "seller" | "other";
 
 const useTicketActions = (
   ticket: TicketMetadata,
-  refreshTicket: () => void
+  refreshTicket: () => void,
+  purchaseTrigger: (arg0: boolean) => void
 ) => {
   const [isSold, setIsSold] = useState(ticket.isSold);
   const [status, setStatus] = useState<"pending" | "disputed" | "resolved">(
@@ -72,7 +73,7 @@ const useTicketActions = (
   }, [allowanceData, allowanceFetched]);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [dialogState, setDialogState] = useState<1 | 2 | 3>(1);
+  const [dialogState, setDialogState] = useState<1 | 2 | 3>(3);
 
   const handleBuy = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -129,8 +130,13 @@ const useTicketActions = (
 
       await waitForTransactionReceipt(config, { hash: tx });
 
-      setIsSold(true);
+      // setIsSold(true);
+      purchaseTrigger(true);
       setDialogState(3);
+
+      setTimeout(() => {
+        purchaseTrigger(false);
+      }, 5000);
 
       await axios.post("/api/email", {
         tokenId: ticket.id.split("-")[2],
@@ -217,9 +223,10 @@ const useTicketActions = (
     handleBuy,
     handleConfirmBuy,
     handleDispute,
-    isSold,
     userRole,
     ticketPrice,
+    isSold,
+    setIsSold,
     isDialogOpen,
     dialogState,
     setIsDialogOpen,

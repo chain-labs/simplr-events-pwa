@@ -129,7 +129,7 @@ export default function TicketComponent({ ticketId }: Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-100 p-8">
-      <Confetti run={purchaseTrigger} />
+      {purchaseTrigger && <Confetti run={purchaseTrigger} />}
       <div className="max-w-4xl mx-auto">
         <Card className="overflow-hidden bg-white/80 backdrop-blur-sm shadow-xl">
           <div className="relative h-64 sm:h-80">
