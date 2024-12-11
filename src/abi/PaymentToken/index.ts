@@ -19,14 +19,14 @@ const usePaymentTokenContract = () => {
   const [contract, setContract] = useState<IPaymentContract>({
     abi,
     address: "0x",
-    decimals: envVars.isTestNetwork ? 18 : 6,
+    decimals: envVars.isTestNetwork ? 6 : 6,
   });
 
   useEffect(() => {
     if (isTestNetwork) {
       const address = CONTRACTS[arbitrumSepolia.id]
         .paymentToken as unknown as `0x${string}`;
-      const decimals = 18;
+      const decimals = 6;
       setContract({ abi, address, decimals });
     } else {
       const address = CONTRACTS[base.id]

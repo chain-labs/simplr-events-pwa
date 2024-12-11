@@ -6,6 +6,7 @@ import { formatUnits } from "viem";
 import axios from "axios";
 import { Calendar, MapPin, QrCode, ScanQrCode, Tag, Timer } from "lucide-react";
 import { useAccount } from "wagmi";
+import Confetti from "react-confetti";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { envVars } from "@/lib/envVars";
@@ -50,7 +51,9 @@ export const getTicketDetails = async (ticketId: string) => {
   const metadata: TicketMetadata = {
     id: ticketId,
     seatNo: ticket.seat,
-    serialNumber: ticket.ticketSerialNumberHash,
+    serialNumber: ticket.tokenMetadata?.attributes.find(
+      (item: Record<string, string>) => item["trait_type"] === "Token Id"
+    ).value,
     price: listingInfo ? listingInfo.price : "N/A",
     deadline: listingInfo ? listingInfo.deadline : "N/A",
     eventName: ticket.event.name,
@@ -84,8 +87,8 @@ export const checkEscrowStatus = async (
 
   console.log({ escrowData });
 
-  const isDisputed = escrowData.data.data.escrow?.isDisputed;
-  const isResolved = escrowData.data.data.escrow?.isResolved;
+  const isDisputed = !!escrowData.data.data.escrow?.isDisputed;
+  const isResolved = !!escrowData.data.data.escrow?.isResolved;
 
   return { isDisputed, isResolved };
 };
@@ -94,6 +97,7 @@ export default function TicketComponent({ ticketId }: Props) {
   const [ticket, setTicket] = useState<TicketMetadata>();
   const PTContract = usePaymentTokenContract();
   const EscrowContract = useEscrowContract();
+  const [purchaseTrigger, setPurchaseTrigger] = useState(false);
 
   const account = useAccount();
 
@@ -101,6 +105,7 @@ export default function TicketComponent({ ticketId }: Props) {
     const status = await checkEscrowStatus(ticketId, EscrowContract.address);
     getTicketDetails(ticketId).then(metadata => {
       const response = { ...metadata, ...status };
+      console.log({ response });
       setTicket(response);
     });
   }, [ticketId, EscrowContract]);
@@ -124,6 +129,7 @@ export default function TicketComponent({ ticketId }: Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-100 p-8">
+      <Confetti run={purchaseTrigger} />
       <div className="max-w-4xl mx-auto">
         <Card className="overflow-hidden bg-white/80 backdrop-blur-sm shadow-xl">
           <div className="relative h-64 sm:h-80">
@@ -150,14 +156,14 @@ export default function TicketComponent({ ticketId }: Props) {
           <CardContent className="p-6">
             <div className="grid grid-cols-2 gap-6 mb-6">
               <InfoItem icon={MapPin} label="Seat No" value={ticket.seatNo} />
-              {/* {account.address === ticket.seller ||
+              {account.address === ticket.seller ||
               account.address === ticket.buyer ? (
                 <InfoItem
                   icon={ScanQrCode}
                   label="TBW Token Number"
                   value={ticket?.serialNumber ?? "-"}
                 />
-              ) : null} */}
+              ) : null}
               <InfoItem
                 icon={Tag}
                 label="Price"
@@ -181,7 +187,11 @@ export default function TicketComponent({ ticketId }: Props) {
                 ).toLocaleString()}
               />
             </div>
-            <TicketActions ticket={ticket} refreshTicket={refreshTicket} />
+            <TicketActions
+              ticket={ticket}
+              refreshTicket={refreshTicket}
+              purchaseTrigger={setPurchaseTrigger}
+            />
           </CardContent>
         </Card>
       </div>

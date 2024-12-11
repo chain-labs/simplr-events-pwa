@@ -28,8 +28,8 @@ import useEventContract from "@/abi/Event";
 import useEscrowContract from "@/abi/Escrow";
 
 import { TicketMetadata } from ".";
-
-type UserRole = "buyer" | "seller" | "other";
+import Confetti from "react-confetti";
+import useTicketActions from "../hooks/useTicketActions";
 
 export default function TicketActions({
   ticket,
@@ -37,188 +37,19 @@ export default function TicketActions({
 }: {
   ticket: TicketMetadata;
   refreshTicket: () => void;
+  purchaseTrigger: (arg0: boolean) => void;
 }) {
-  const [isSold, setIsSold] = useState(ticket.isSold);
-  const [status, setStatus] = useState<"pending" | "disputed" | "resolved">(
-    ticket.isDisputed ? "disputed" : ticket.isResolved ? "resolved" : "pending"
-  );
-
-  // Simulated function to get current user's wallet address
-  const account = useAccount();
-  const PTContract = usePaymentTokenContract();
-  const EventContract = useEventContract();
-  const MarketplaceContract = useMarketplaceContract();
-  const EscrowContract = useEscrowContract();
-  const { writeContractAsync: buyTicket } = useWriteContract();
-  const { writeContractAsync: setAllowance } = useWriteContract();
-  const { writeContractAsync: releaseFunds } = useWriteContract();
-  const { writeContractAsync: dispute } = useWriteContract();
-
-  const config = useConfig();
-  const userWallet = account.address;
-  const client = usePublicClient();
-
-  const userRole: UserRole = useMemo(() => {
-    const role =
-      userWallet === ticket.buyer
-        ? "buyer"
-        : userWallet === ticket.seller
-        ? "seller"
-        : "other";
-
-    return role;
-  }, [userWallet, ticket]);
-
-  // Check user's allowance of paymentToken
-  const { data: allowanceData, isFetched: allowanceFetched } = useReadContract({
-    address: PTContract.address,
-    abi: PTContract.abi,
-    functionName: "allowance",
-    args: [`${userWallet}`, MarketplaceContract.address],
-  });
-
-  const allowance = useMemo(() => {
-    if (allowanceFetched) {
-      console.log({ allowanceData });
-      return allowanceData as bigint;
-    }
-
-    return BigInt(0);
-  }, [allowanceData, allowanceFetched]);
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [dialogState, setDialogState] = useState<"pending" | "success">(
-    "pending"
-  );
-
-  const handleBuy = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    setIsDialogOpen(true);
-    setDialogState("pending");
-
-    try {
-      if (allowance < BigInt(ticket.price)) {
-        const requiredFundsToAllow = BigInt(ticket.price) - allowance;
-        const allowOptions = {
-          address: PTContract.address,
-          abi: PTContract.abi,
-          functionName: "approve",
-          args: [MarketplaceContract.address, requiredFundsToAllow],
-        };
-
-        const sim = await client?.estimateGas({
-          ...allowOptions,
-          account: account.address,
-        });
-        const allowanceTx = await setAllowance({ ...allowOptions });
-        await waitForTransactionReceipt(config, { hash: allowanceTx });
-      }
-      const tokenId = ticket.id.split("-")[2];
-      const signatureResponse = await axios.get(
-        `/api/listings?ticketId=ticket-${EventContract.address}-${tokenId}`
-      );
-      const signature = signatureResponse.data.signature;
-      const mintOptions = {
-        address: MarketplaceContract.address,
-        abi: MarketplaceContract.abi,
-        functionName: "purchaseTicket",
-        args: [
-          {
-            eventContract: EventContract.address,
-            tokenId: BigInt(tokenId),
-            price: BigInt(ticket.price),
-            seller: ticket.seller,
-            deadline: BigInt(ticket.deadline),
-          },
-          signature,
-        ],
-      };
-      const sim = await client?.estimateGas({
-        ...mintOptions,
-        account: account.address,
-      });
-      console.log({ sim });
-      const tx = await buyTicket({
-        ...mintOptions,
-        gas: BigInt(Math.max(Number(sim as bigint) + 200000, 2000000)),
-      });
-
-      await waitForTransactionReceipt(config, { hash: tx });
-
-      setIsSold(true);
-      setDialogState("success");
-
-      await axios.post("/api/email", {
-        tokenId: ticket.id.split("-")[2],
-        seller: ticket.seller,
-        buyer: userWallet,
-        orderNumber: ticket.serialNumber,
-      });
-      console.log("Email sent");
-    } catch (err) {
-      console.error(err);
-      setIsDialogOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    if (isSold) {
-      refreshTicket();
-    }
-  }, [isSold, refreshTicket]);
-
-  const handleConfirmBuy = async (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-    const userConfirmed = window.confirm(
-      "Are you sure you want to confirm the ticket transfer?"
-    );
-    if (!userConfirmed) {
-      return;
-    }
-    const releaseOptions = {
-      address: EscrowContract.address,
-      abi: EscrowContract.abi,
-      functionName: "releaseFunds",
-      args: [BigInt(ticket.id.split("-")[2]), EventContract.address],
-    };
-
-    const sim = await client?.estimateGas({
-      ...releaseOptions,
-      account: account.address,
-    });
-    const tx = await releaseFunds({
-      ...releaseOptions,
-      gas: BigInt(Math.max(Number(sim as bigint) + 200000, 1000000)),
-    });
-
-    const receipt = await waitForTransactionReceipt(config, { hash: tx });
-
-    console.log({ receipt });
-    refreshTicket();
-  };
-
-  const handleDispute = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    const userConfirmed = window.confirm(
-      "Are you sure you want to confirm the ticket transfer?"
-    );
-    if (!userConfirmed) {
-      return;
-    }
-    const tx = await dispute({
-      address: EscrowContract.address,
-      abi: EscrowContract.abi,
-      functionName: "dispute",
-      args: [BigInt(ticket.id.split("-")[2]), EventContract.address],
-    });
-
-    const receipt = await waitForTransactionReceipt(config, { hash: tx });
-
-    console.log({ receipt });
-    refreshTicket();
-  };
+  const {
+    isSold,
+    userRole,
+    ticketPrice,
+    handleBuy,
+    handleConfirmBuy,
+    handleDispute,
+    isDialogOpen,
+    dialogState,
+    setIsDialogOpen,
+  } = useTicketActions(ticket, refreshTicket);
 
   if (!isSold) {
     return (
@@ -233,8 +64,7 @@ export default function TicketActions({
           disabled={userRole === "seller"}
           className="w-full disabled:bg-slate-500"
         >
-          Buy Ticket for{" "}
-          {formatUnits(BigInt(ticket.price), PTContract.decimals)} USDC
+          Buy Ticket for {ticketPrice}
         </Button>
         <PurchaseDialog
           isOpen={isDialogOpen}
@@ -342,31 +172,67 @@ function PurchaseDialog({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  state: "pending" | "success";
+  state: 1 | 2 | 3;
 }) {
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {state === "pending" ? "Purchasing Ticket" : "Purchase Successful"}
-          </DialogTitle>
+  const stages: string[] = ["Approving Payment", "Completing Purchase"];
+  // const currentStage = state === "pending" ? 0 : 2;
 
-          {state === "pending" ? (
-            <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-              <span className="ml-2">Processing your purchase...</span>
-            </div>
-          ) : (
-            <div className="text-center">
-              <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-              <p>Your ticket has been successfully purchased!</p>
-              <Button onClick={onClose} className="mt-4">
-                Close
-              </Button>
-            </div>
-          )}
+  const handleOpenChange = (open: boolean) => {
+    if (state === 3) {
+      onClose();
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent className="bg-black bg-opacity-10 backdrop-blur-lg border border-gray-600">
+        <DialogHeader>
+          <DialogTitle className="text-2xl text-white">
+            {state !== 3 ? "Purchasing Ticket" : "Purchase Successful"}
+          </DialogTitle>
         </DialogHeader>
+        {state !== 3 ? (
+          <div className="space-y-6 p-4">
+            <div className="space-y-3">
+              {stages.map((stage, index) => (
+                <div
+                  key={stage}
+                  className={`flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 ${
+                    index + 1 < state ? "bg-white/5" : "opacity-50"
+                  }`}
+                >
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                      index + 1 < state
+                        ? "bg-green-500 shadow-lg shadow-green-500/30"
+                        : index + 1 === state
+                        ? "bg-yellow-500 shadow-lg shadow-yellow-500/30 animate-pulse"
+                        : "bg-gray-600"
+                    }`}
+                  >
+                    {index + 1 < state && (
+                      <CheckCircle className="w-5 h-5 text-white" />
+                    )}
+                  </div>
+                  <span className="font-medium text-white">{stage}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6 p-4 text-center">
+            <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
+            <p className="text-white">
+              Your ticket has been successfully purchased!
+            </p>
+            <Button
+              onClick={onClose}
+              className="w-full bg-brandWhite hover:bg-brandBlack text-brandBlack hover:text-brandWhite font-medium py-2 px-4 rounded-lg transition-colors duration-300"
+            >
+              Close
+            </Button>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

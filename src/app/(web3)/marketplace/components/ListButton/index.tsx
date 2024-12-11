@@ -106,7 +106,7 @@ const TicketListingFlow: React.FC = () => {
       </p>
       {mounted && (
         <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-          <DialogContent className="bg-black bg-opacity-10 backdrop-blur-lg border border-gray-600">
+          <DialogContent className="bg-black bg-opacity-10 text-white backdrop-blur-lg border border-gray-600">
             <DialogHeader>
               <DialogTitle className="text-2xl text-white">
                 {step === 1 && "Enter your Ticket Details"}
