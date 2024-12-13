@@ -1,35 +1,20 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  useAccount,
-  useConfig,
-  usePublicClient,
-  useReadContract,
-  useWriteContract,
-} from "wagmi";
-import { waitForTransactionReceipt, estimateGas } from "@wagmi/core";
-import { formatUnits } from "viem";
-import axios from "axios";
+import React from "react";
 import { AlertCircle, CheckCircle, XCircle } from "lucide-react";
 
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import usePaymentTokenContract from "@/abi/PaymentToken";
-import useMarketplaceContract from "@/abi/Marketplace";
-import useEventContract from "@/abi/Event";
-import useEscrowContract from "@/abi/Escrow";
+
+import useTicketActions from "../hooks/useTicketActions";
 
 import { TicketMetadata } from ".";
-import Confetti from "react-confetti";
-import useTicketActions from "../hooks/useTicketActions";
 
 export default function TicketActions({
   ticket,

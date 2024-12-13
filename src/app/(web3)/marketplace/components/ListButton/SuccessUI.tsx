@@ -1,14 +1,10 @@
-import React, { useEffect } from "react";
-import { ArrowUpLeftIcon, ArrowUpRightIcon, CheckCircle2 } from "lucide-react";
-import Confetti from "react-confetti";
-import { useWindowSize } from "react-use";
-
-import { SuccessUIProps } from "./types";
+import React from "react";
+import { ArrowUpRightIcon, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
-const SuccessUI: React.FC<SuccessUIProps> = ({ formData }) => {
-  const { width, height } = useWindowSize();
+import { SuccessUIProps } from "./types";
 
+const SuccessUI: React.FC<SuccessUIProps> = ({ formData }) => {
   return (
     <div className="text-center space-y-6 p-6 shadow-lg rounded-lg">
       <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto" />

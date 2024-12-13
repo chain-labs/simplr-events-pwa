@@ -1,5 +1,3 @@
-import useMarketplaceContract from "@/abi/Marketplace";
-import usePaymentTokenContract from "@/abi/PaymentToken";
 import axios from "axios";
 import React, { useEffect, useMemo, useState } from "react";
 import { waitForTransactionReceipt } from "@wagmi/core";
@@ -10,12 +8,14 @@ import {
   useReadContract,
   useWriteContract,
 } from "wagmi";
+import { formatUnits } from "viem";
 
+import useMarketplaceContract from "@/abi/Marketplace";
+import usePaymentTokenContract from "@/abi/PaymentToken";
 import useEventContract from "@/abi/Event";
 import useEscrowContract from "@/abi/Escrow";
 
 import { TicketMetadata } from "../components";
-import { formatUnits } from "viem";
 
 type UserRole = "buyer" | "seller" | "other";
 
@@ -25,9 +25,6 @@ const useTicketActions = (
   purchaseTrigger: (arg0: boolean) => void
 ) => {
   const [isSold, setIsSold] = useState(ticket.isSold);
-  const [status, setStatus] = useState<"pending" | "disputed" | "resolved">(
-    ticket.isDisputed ? "disputed" : ticket.isResolved ? "resolved" : "pending"
-  );
 
   // Simulated function to get current user's wallet address
   const account = useAccount();
@@ -65,7 +62,6 @@ const useTicketActions = (
 
   const allowance = useMemo(() => {
     if (allowanceFetched) {
-      console.log({ allowanceData });
       return allowanceData as bigint;
     }
 
@@ -122,7 +118,6 @@ const useTicketActions = (
         ...mintOptions,
         account: account.address,
       });
-      console.log({ sim });
       const tx = await buyTicket({
         ...mintOptions,
         gas: BigInt(Math.max(Number(sim as bigint) + 200000, 2000000)),

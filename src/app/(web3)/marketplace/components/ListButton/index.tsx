@@ -1,10 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { concat, encodeAbiParameters, keccak256 } from "viem";
+import React, { useState, useEffect } from "react";
 import { useAccount, useConfig } from "wagmi";
 import Confetti from "react-confetti";
-import { signMessage } from "@wagmi/core";
 
 import {
   Dialog,
@@ -12,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { EVENTS } from "@/content";
 
 import { FormData } from "./types";
 import InitialForm from "./InitialForm";
@@ -31,11 +28,6 @@ const TicketListingFlow: React.FC = () => {
     serialNumber: "",
     price: "",
   });
-
-  const [ticketData, setTicketData] = useState<`0x${string}` | null>(null);
-
-  const config = useConfig();
-  const account = useAccount();
 
   // Handle client-side mounting
   useEffect(() => {
@@ -135,7 +127,6 @@ const TicketListingFlow: React.FC = () => {
                 currentStage={currentStage}
                 formData={formData}
                 incrementProgress={incrementProgress}
-                ticketData={ticketData}
                 resetProgress={() => setCurrentStage(0)}
                 closeModal={() => handleOpenChange(false, true)}
               />
