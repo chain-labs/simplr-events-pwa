@@ -15,8 +15,6 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
   currentStage,
   incrementProgress,
   formData,
-  ticketData,
-  resetProgress,
   closeModal,
 }) => {
   const stages: string[] = [
@@ -40,7 +38,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     handleApprove,
     handleSignature,
     handleList,
-  } = useListingTicket({ formData, ticketData });
+  } = useListingTicket({ formData });
 
   const EventContract = useEventContract();
   const MarketplaceContract = useMarketplaceContract();

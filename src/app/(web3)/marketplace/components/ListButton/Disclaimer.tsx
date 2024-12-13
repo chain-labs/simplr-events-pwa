@@ -106,7 +106,11 @@ const Disclaimer: React.FC<DisclaimerProps> = ({
         </label>
       </div>
       <div className="flex justify-end space-x-2">
-        <Button variant="outline" onClick={onGoBack}>
+        <Button
+          variant="outline"
+          onClick={onGoBack}
+          className="text-brandBlack"
+        >
           Go Back
         </Button>
         <Button

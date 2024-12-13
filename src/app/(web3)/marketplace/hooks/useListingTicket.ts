@@ -29,28 +29,27 @@ import { FormData } from "../components/ListButton/types";
 
 type Props = {
   formData: FormData;
-  ticketData: `0x${string}` | null;
 };
 // 15th November 2024 4pm Thailand time
 
-const getLatestTokenId = async (event: string) => {
-  // const query = `query MyQuery($id: String!) {
-  //   event(id: $id) {
-  //       tickets {
-  //           items {
-  //               id
-  //           }
-  //       }
-  //   }
-  // }`;
-  // const variables = { id: `event-${event}` };
+// const getLatestTokenId = async (event: string) => {
+//   // const query = `query MyQuery($id: String!) {
+//   //   event(id: $id) {
+//   //       tickets {
+//   //           items {
+//   //               id
+//   //           }
+//   //       }
+//   //   }
+//   // }`;
+//   // const variables = { id: `event-${event}` };
 
-  // const response = await axios.post(envVars.subgraphUrl, { query, variables });
+//   // const response = await axios.post(envVars.subgraphUrl, { query, variables });
 
-  const response = await axios.get(`/api/metadata?event=${event}`);
-  const tokenId = response.data.count ?? 0;
-  return `${tokenId + 1}`;
-};
+//   const response = await axios.get(`/api/metadata?event=${event}`);
+//   const tokenId = response.data.count ?? 0;
+//   return `${tokenId + 1}`;
+// };
 
 const useListingTicket = ({ formData }: Props) => {
   const account = useAccount();
@@ -94,7 +93,6 @@ const useListingTicket = ({ formData }: Props) => {
       args: [],
     });
     const tokenId = ((tokenIdCounter as bigint) + BigInt(1)).toString();
-    console.log({ tokenId });
     const data = {
       tokenId,
       eventContract: EventContract.address,

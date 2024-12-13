@@ -20,7 +20,6 @@ export interface ProgressBarProps {
   currentStage: number;
   incrementProgress: (stage: number) => void;
   formData: FormData;
-  ticketData: `0x${string}` | null;
   resetProgress: () => void;
   closeModal: () => void;
 }
