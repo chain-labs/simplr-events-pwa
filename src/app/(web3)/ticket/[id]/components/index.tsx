@@ -51,9 +51,10 @@ export const getTicketDetails = async (ticketId: string) => {
   const metadata: TicketMetadata = {
     id: ticketId,
     seatNo: ticket.seat,
-    serialNumber: ticket.tokenMetadata?.attributes.find(
-      (item: Record<string, string>) => item["trait_type"] === "Token Id"
-    ).value,
+    serialNumber:
+      ticket.tokenMetadata?.attributes?.find(
+        (item: Record<string, string>) => item["trait_type"] === "Token Id"
+      )?.value ?? "N/A",
     price: listingInfo ? listingInfo.price : "N/A",
     deadline: listingInfo ? listingInfo.deadline : "N/A",
     eventName: ticket.event.name,
